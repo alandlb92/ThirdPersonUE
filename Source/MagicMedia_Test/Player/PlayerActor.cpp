@@ -24,10 +24,13 @@ void FPlayerInput::UpdateRightAxisY(float y)
 
 void FPlayerInput::Sanitize()
 {
-	LeftAxistState = _rawLeftAxis.ClampAxes(-1.0f, 1.0f);
-	_rawLeftAxis.Set(0.0f, 0.0f);
-	RightAxistState = _rawRightAxis.ClampAxes(-1.0f, 1.0f);
-	_rawRightAxis.Set(0.0f, 0.0f);
+	if (Enabled)
+	{
+		LeftAxistState = _rawLeftAxis.ClampAxes(-1.0f, 1.0f);
+		_rawLeftAxis.Set(0.0f, 0.0f);
+		RightAxistState = _rawRightAxis.ClampAxes(-1.0f, 1.0f);
+		_rawRightAxis.Set(0.0f, 0.0f);
+	}
 }
 
 
@@ -42,6 +45,7 @@ APlayerActor::APlayerActor()
 	_cameraSpringArm->TargetArmLength = 400.0f;
 	_cameraSpringArm->bEnableCameraLag = true;
 	_cameraSpringArm->CameraLagSpeed = 3.0f;
+	_cameraSpringArm->SetRelativeLocation(FVector(0, 0, 100));
 
 	_camera = CreateAbstractDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 	_camera->SetRelativeLocationAndRotation(FVector(0.0f, 0.0f, 0.0f), FRotator(0.0f, 0.0f, 0.0f));
@@ -49,16 +53,18 @@ APlayerActor::APlayerActor()
 
 	_maxSpeed = 600.0f;
 	_maxPlayerSpeedRotation = 100.0f;
-	_maxCameraSpeedRotation = 100.0f;
+	_maxCameraSpeedRotation = 50.0f;
 
 	bUseControllerRotationYaw = false;
-	AutoPossessPlayer = EAutoReceiveInput::Player0;
 }
 
 // Called when the game starts or when spawned
 void APlayerActor::BeginPlay()
 {
 	Super::BeginPlay();
+	_playerInput.Enabled = false;
+	SetActorHiddenInGame(true);
+	GetCharacterMovement()->GravityScale = 0;
 	_animation = Cast<UPlayerAnimInstance>(GetMesh()->GetAnimInstance());
 }
 
@@ -96,7 +102,7 @@ void APlayerActor::CalculatePlayerYawRotation(float DeltaTime)
 void APlayerActor::CalculateCameraPitchRotation(float DeltaTime)
 {
 	float pitchToAdd = _playerInput.RightAxistState.Y * _maxCameraSpeedRotation * DeltaTime;
-	FRotator newRotation = _cameraSpringArm->GetRelativeRotation() + FRotator(pitchToAdd, 0, 0);	
+	FRotator newRotation = _cameraSpringArm->GetRelativeRotation() + FRotator(pitchToAdd, 0, 0);
 	newRotation.Pitch = UKismetMathLibrary::ClampAngle(newRotation.Pitch, -60.0f, 60.0f);
 	_cameraSpringArm->SetRelativeRotation(newRotation);
 }

@@ -6,6 +6,7 @@
 #include "GameFramework/Character.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "PlayerAnimInstance.h"
 #include "PlayerActor.generated.h"
 
@@ -13,6 +14,7 @@
 struct FPlayerInput
 {
 public:
+	bool Enabled = true;
 	FVector2D LeftAxistState;
 	FVector2D RightAxistState;
 
