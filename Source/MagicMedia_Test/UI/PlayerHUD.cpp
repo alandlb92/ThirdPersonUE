@@ -51,6 +51,11 @@ void APlayerHUD::BeginPlay()
 		ChangeScreen(UIType::SETUP);
 }
 
+void APlayerHUD::PlayerTwoIsEnable()
+{
+	_setUpInstance->DisableAddPlayerTwoBox();
+}
+
 void APlayerHUD::SetUpInputComponent()
 {
 	GetOwningPlayerController()->InputComponent->BindAction("UIConfirm", IE_Pressed, this, &APlayerHUD::ButtonConfirmPressed);

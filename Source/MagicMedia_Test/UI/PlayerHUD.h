@@ -29,6 +29,8 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "Widgets")
 	TSubclassOf<USetUpUI> _setUpUI;
 
+	void PlayerTwoIsEnable();
+
 private:
 	void SetUpInputComponent();
 

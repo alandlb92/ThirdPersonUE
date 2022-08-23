@@ -6,6 +6,7 @@
 #include "BaseUI.h"
 #include <functional>
 #include "Components/TextBlock.h"
+#include "Components/Spacer.h"
 #include "Components/SizeBox.h"
 #include "VirtualKeyboardUI.h"
 #include "Kismet/GameplayStatics.h"
@@ -27,6 +28,13 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
 	UVirtualKeyboardUI* _virtualKeyBoard;
 
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
+	USpacer* _player2Spacer;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
+	UBorder* _player2Box;
+
 	void NativeConstruct() override;	
 	void BeginPlay();
 
@@ -39,6 +47,8 @@ public:
 	void ButtonLeftPressed() override;
 	void ButtonRightPressed() override;
 	void ButtonPPressed() override;
+
+	void DisableAddPlayerTwoBox();
 
 private:
 	void UpdateGeneralMessage();

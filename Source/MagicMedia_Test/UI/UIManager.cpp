@@ -20,3 +20,11 @@ void UUIManager::ChangeAllPlayersScreen(UIType uiType)
 		hud->ChangeScreen(uiType);
 	}
 }
+
+void UUIManager::PlayerTwoIsEnable()
+{
+	for (APlayerHUD* hud : _HUDS)
+	{
+		hud->PlayerTwoIsEnable();
+	}
+}

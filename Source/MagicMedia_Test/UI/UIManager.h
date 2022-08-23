@@ -18,6 +18,7 @@ public:
 	void Register(APlayerHUD* playerHUD);
 	void Unregister(APlayerHUD* playerHUD);
 	void ChangeAllPlayersScreen(UIType uiType);
+	void PlayerTwoIsEnable();
 
 private:
 	TArray<APlayerHUD*> _HUDS;

@@ -15,6 +15,13 @@ void USetUpUI::NativeConstruct()
 	_textMesage->SetText(FText(FText::FromString("Write you name")));
 }
 
+void USetUpUI::DisableAddPlayerTwoBox()
+{
+	_player2Spacer->SetVisibility(ESlateVisibility::Hidden);
+	_player2Box->SetVisibility(ESlateVisibility::Hidden);
+}
+
+
 void  USetUpUI::BeginPlay()
 {
 	_gameMode = Cast<AMainGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
@@ -73,6 +80,8 @@ void USetUpUI::ButtonRightPressed()
 {
 	if (!GetPlayerState()->ready && GetPlayerState()->joined)
 		_virtualKeyBoard->RightKey();
+	else
+		UE_LOG(LogTemp, Warning, TEXT("player not joined"))
 }
 
 
@@ -81,10 +90,7 @@ void USetUpUI::ButtonPPressed()
 	if (_gameMode->GetPlayerManager()->GetPlayerCount() == 1)
 	{
 		_gameMode->GetPlayerManager()->CreatePlayer2(GetWorld());
-	}
-	else
-	{ 
-	
+		_gameMode->GetHUDManager()->PlayerTwoIsEnable();
 	}
 }
 
