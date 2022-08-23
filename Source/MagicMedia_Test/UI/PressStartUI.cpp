@@ -9,7 +9,7 @@ void UPressStartUI::AnimationStartPressedFinished()
 	ChangeScreen(UIType::SETUP);
 }
 
-void UPressStartUI::ButtonConfirmPressed()
+void UPressStartUI::ButtonConfirmPressed_Player1()
 {
 	CallStartPressed();
 }

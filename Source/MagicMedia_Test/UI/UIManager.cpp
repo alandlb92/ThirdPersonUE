@@ -6,7 +6,7 @@
 void AUIManager::BeginPlay()
 {
 	Super::BeginPlay();
-	if (_pressStartUI)
+	if (_pressStartUI && _setUpUI && PlayerOwner == GetWorld()->GetFirstPlayerController())
 	{
 		if (_pressStartInstance == nullptr)
 			_pressStartInstance = CreateWidget<UPressStartUI>(GetWorld(), _pressStartUI);
@@ -40,18 +40,28 @@ void AUIManager::BeginPlay()
 
 void AUIManager::SetUpInputComponent()
 {
-	if (!_firstPlayerController) {
-		_firstPlayerController = GetWorld()->GetFirstPlayerController();
+	if (!_playerOneController) {		
+		_playerOneController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+		_playerTwoController = UGameplayStatics::GetPlayerController(GetWorld(), 1);		
 	}
 
-	if (_firstPlayerController) {
-		_firstPlayerController->InputComponent->BindAction("UIConfirm", IE_Pressed, this, &AUIManager::ButtonConfirmPressed);
-		_firstPlayerController->InputComponent->BindAction("UIBack", IE_Pressed, this, &AUIManager::ButtonBackPressed);
+	if (_playerOneController) {
+		_playerOneController->InputComponent->BindAction("UIConfirm", IE_Pressed, this, &AUIManager::ButtonConfirmPressed_Player1);
+		_playerOneController->InputComponent->BindAction("UIBack", IE_Pressed, this, &AUIManager::ButtonBackPressed_Player1);
+		_playerOneController->InputComponent->BindAction("UIUp", IE_Pressed, this, &AUIManager::ButtonUpPressed_Player1);
+		_playerOneController->InputComponent->BindAction("UIDown", IE_Pressed, this, &AUIManager::ButtonDownPressed_Player1);
+		_playerOneController->InputComponent->BindAction("UILeft", IE_Pressed, this, &AUIManager::ButtonLeftPressed_Player1);
+		_playerOneController->InputComponent->BindAction("UIRight", IE_Pressed, this, &AUIManager::ButtonRightPressed_Player1);
+	}
 
-		_firstPlayerController->InputComponent->BindAction("UIUp", IE_Pressed, this, &AUIManager::ButtonUpPressed);
-		_firstPlayerController->InputComponent->BindAction("UIDown", IE_Pressed, this, &AUIManager::ButtonDownPressed);
-		_firstPlayerController->InputComponent->BindAction("UILeft", IE_Pressed, this, &AUIManager::ButtonLeftPressed);
-		_firstPlayerController->InputComponent->BindAction("UIRight", IE_Pressed, this, &AUIManager::ButtonRightPressed);
+	if (_playerTwoController)
+	{
+		_playerTwoController->InputComponent->BindAction("UIConfirm", IE_Pressed, this, &AUIManager::ButtonConfirmPressed_Player2);
+		_playerTwoController->InputComponent->BindAction("UIBack", IE_Pressed, this, &AUIManager::ButtonBackPressed_Player2);
+		_playerTwoController->InputComponent->BindAction("UIUp", IE_Pressed, this, &AUIManager::ButtonUpPressed_Player2);
+		_playerTwoController->InputComponent->BindAction("UIDown", IE_Pressed, this, &AUIManager::ButtonDownPressed_Player2);
+		_playerTwoController->InputComponent->BindAction("UILeft", IE_Pressed, this, &AUIManager::ButtonLeftPressed_Player2);
+		_playerTwoController->InputComponent->BindAction("UIRight", IE_Pressed, this, &AUIManager::ButtonRightPressed_Player2);
 	}
 }
 
@@ -70,7 +80,6 @@ void AUIManager::DisableInput()
 
 void AUIManager::ChangeScreen(UIType uiType)
 {
-	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, "ChangeScreen");
 	if (_lastUIControll)
 		_lastUIControll->Close();
 
@@ -89,38 +98,75 @@ void AUIManager::ChangeScreen(UIType uiType)
 	}
 }
 
-void AUIManager::ButtonBackPressed()
+void AUIManager::ButtonBackPressed_Player1()
 {
 	if (_currentUIinControll)
-		_currentUIinControll->ButtonBackPressed();
+		_currentUIinControll->ButtonBackPressed_Player1();
 }
 
-void AUIManager::ButtonConfirmPressed()
+void AUIManager::ButtonConfirmPressed_Player1()
 {
 	if (_currentUIinControll)
-		_currentUIinControll->ButtonConfirmPressed();
+		_currentUIinControll->ButtonConfirmPressed_Player1();
 }
 
-void AUIManager::ButtonUpPressed()
+void AUIManager::ButtonUpPressed_Player1()
 {
 	if (_currentUIinControll)
-		_currentUIinControll->ButtonUpPressed();
+		_currentUIinControll->ButtonUpPressed_Player1();
 }
 
-void AUIManager::ButtonDownPressed()
+void AUIManager::ButtonDownPressed_Player1()
 {
 	if (_currentUIinControll)
-		_currentUIinControll->ButtonDownPressed();
+		_currentUIinControll->ButtonDownPressed_Player1();
 }
 
-void AUIManager::ButtonLeftPressed()
+void AUIManager::ButtonLeftPressed_Player1()
 {
 	if (_currentUIinControll)
-		_currentUIinControll->ButtonLeftPressed();
+		_currentUIinControll->ButtonLeftPressed_Player1();
 }
 
-void AUIManager::ButtonRightPressed()
+void AUIManager::ButtonRightPressed_Player1()
 {
 	if (_currentUIinControll)
-		_currentUIinControll->ButtonRightPressed();
+		_currentUIinControll->ButtonRightPressed_Player1();
+}
+
+
+void AUIManager::ButtonBackPressed_Player2()
+{
+	if (_currentUIinControll)
+		_currentUIinControll->ButtonBackPressed_Player2();
+}
+
+void AUIManager::ButtonConfirmPressed_Player2()
+{
+	if (_currentUIinControll)
+		_currentUIinControll->ButtonConfirmPressed_Player2();
+}
+
+void AUIManager::ButtonUpPressed_Player2()
+{
+	if (_currentUIinControll)
+		_currentUIinControll->ButtonUpPressed_Player2();
+}
+
+void AUIManager::ButtonDownPressed_Player2()
+{
+	if (_currentUIinControll)
+		_currentUIinControll->ButtonDownPressed_Player2();
+}
+
+void AUIManager::ButtonLeftPressed_Player2()
+{
+	if (_currentUIinControll)
+		_currentUIinControll->ButtonLeftPressed_Player2();
+}
+
+void AUIManager::ButtonRightPressed_Player2()
+{
+	if (_currentUIinControll)
+		_currentUIinControll->ButtonRightPressed_Player2();
 }

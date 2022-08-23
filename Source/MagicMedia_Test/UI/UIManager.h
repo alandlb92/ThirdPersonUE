@@ -31,7 +31,8 @@ public:
 private:
 	void SetUpInputComponent();
 
-	APlayerController* _firstPlayerController;
+	APlayerController* _playerOneController;
+	APlayerController* _playerTwoController;
 
 	UBaseUI* _currentUIinControll;
 	UBaseUI* _lastUIControll;
@@ -42,11 +43,18 @@ private:
 	void DisableInput();
 	void ChangeScreen(UIType uiType);
 	
-	void ButtonBackPressed();
-	void ButtonConfirmPressed();
-	void ButtonUpPressed();
-	void ButtonDownPressed();
-	void ButtonLeftPressed();
-	void ButtonRightPressed();
+	void ButtonBackPressed_Player1();
+	void ButtonConfirmPressed_Player1();
+	void ButtonUpPressed_Player1();
+	void ButtonDownPressed_Player1();
+	void ButtonLeftPressed_Player1();
+	void ButtonRightPressed_Player1();
+
+	void ButtonBackPressed_Player2();
+	void ButtonConfirmPressed_Player2();
+	void ButtonUpPressed_Player2();
+	void ButtonDownPressed_Player2();
+	void ButtonLeftPressed_Player2();
+	void ButtonRightPressed_Player2();
 
 };

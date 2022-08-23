@@ -47,26 +47,51 @@ void UBaseUI::ChangeScreen(UIType screenType)
 		OnChangeScreen(screenType);
 }
 
-void UBaseUI::ButtonBackPressed()
+void UBaseUI::ButtonBackPressed_Player1()
 {
 }
 
-void UBaseUI::ButtonConfirmPressed()
+void UBaseUI::ButtonConfirmPressed_Player1()
 {
 }
 
-void UBaseUI::ButtonUpPressed()
+void UBaseUI::ButtonUpPressed_Player1()
 {
 }
 
-void UBaseUI::ButtonDownPressed()
+void UBaseUI::ButtonDownPressed_Player1()
 {
 }
 
-void UBaseUI::ButtonLeftPressed()
+void UBaseUI::ButtonLeftPressed_Player1()
 {
 }
 
-void UBaseUI::ButtonRightPressed()
+void UBaseUI::ButtonRightPressed_Player1()
+{
+}
+
+
+void UBaseUI::ButtonBackPressed_Player2()
+{
+}
+
+void UBaseUI::ButtonConfirmPressed_Player2()
+{
+}
+
+void UBaseUI::ButtonUpPressed_Player2()
+{
+}
+
+void UBaseUI::ButtonDownPressed_Player2()
+{
+}
+
+void UBaseUI::ButtonLeftPressed_Player2()
+{
+}
+
+void UBaseUI::ButtonRightPressed_Player2()
 {
 }
