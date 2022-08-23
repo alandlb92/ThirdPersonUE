@@ -4,10 +4,23 @@
 #include "MainGameMode.h"
 #include "GameFramework/PlayerInput.h"
 #include "GameFramework/HUD.h"
+#include "Kismet/GameplayStatics.h"
 
 void AMainGameMode::StartPlay()
 {
+	_playerManager = NewObject<UPlyerManager>();
+	_UIManager = NewObject<UUIManager>();
+
 	Super::StartPlay();
-	APlayerController* player2Cotroller = UGameplayStatics::CreatePlayer(GetWorld());
-	GetWorld()->GetGameViewport()->SetDisableSplitscreenOverride(true);
+	GetWorld()->GetGameViewport()->SetDisableSplitscreenOverride(false);
+}
+
+UPlyerManager* AMainGameMode::GetPlayerManager()
+{
+	return _playerManager;
+}
+
+UUIManager* AMainGameMode::GetHUDManager()
+{
+	return _UIManager;
 }

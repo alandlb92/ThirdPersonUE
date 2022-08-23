@@ -22,6 +22,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void AnimationStartPressedFinished();
 
-	void ButtonConfirmPressed_Player1() override;
+	void ButtonConfirmPressed() override;
+	void ButtonStartPressed() override;
 
 };

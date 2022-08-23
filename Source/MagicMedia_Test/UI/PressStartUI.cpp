@@ -2,14 +2,21 @@
 
 
 #include "PressStartUI.h"
-#include "UIManager.h"
+#include "PlayerHUD.h"
 
 void UPressStartUI::AnimationStartPressedFinished()
 {
 	ChangeScreen(UIType::SETUP);
 }
 
-void UPressStartUI::ButtonConfirmPressed_Player1()
+void UPressStartUI::ButtonConfirmPressed()
 {
 	CallStartPressed();
+	GetOwningPlayer<APlayerController>()->GetPlayerState<APState>()->joined = true;
+}
+
+void UPressStartUI::ButtonStartPressed()
+{
+	CallStartPressed();
+	GetOwningPlayer<APlayerController>()->GetPlayerState<APState>()->joined = true;
 }

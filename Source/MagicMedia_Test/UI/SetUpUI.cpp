@@ -2,48 +2,142 @@
 
 
 #include "SetUpUI.h"
+#include "UIManager.h"
+#include "../Gameplay/MainGameMode.h"
+#include "../Player/PlyerManager.h"
+#include "GameFramework/PlayerController.h"
+#include "GameFramework/PlayerInput.h"
+#include "Kismet/GameplayStatics.h"
 
 void USetUpUI::NativeConstruct()
 {
 	Super::NativeConstruct();
-
-	_playerOneTextMesage->SetText(FText(FText::FromString("Write you name")));
-	_playerTwoTextMesage->SetText(FText(FText::FromString("Press A to join")));
-	_playerTwoVirtualKeyBoard->SetVisibility(ESlateVisibility::Hidden);
+	_textMesage->SetText(FText(FText::FromString("Write you name")));
 }
 
-void USetUpUI::ButtonConfirmPressed_Player2()
+void  USetUpUI::BeginPlay()
 {
-	_playerTwoTextMesage->SetText(FText(FText::FromString("Write you name")));
-	_playerTwoVirtualKeyBoard->SetVisibility(ESlateVisibility::Visible);
+	_gameMode = Cast<AMainGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
+	UpdateGeneralMessage();
 }
 
-void USetUpUI::ButtonBackPressed_Player1()
+void USetUpUI::ButtonBackPressed()
 {
-	_playerOneVirtualKeyBoard->BackSpace();	
+	if (_virtualKeyBoard->GetText().IsEmpty() && GetPlayerState()->GetPlayerId() == 1)
+		UE_LOG(LogTemp, Warning, TEXT("Player 2 UNJOIN"));
+
+	if (!GetPlayerState()->ready && GetPlayerState()->joined)
+		_virtualKeyBoard->BackSpace();
 }
 
-void USetUpUI::ButtonConfirmPressed_Player1()
+void USetUpUI::ButtonConfirmPressed()
 {
-	_playerOneVirtualKeyBoard->Select();
+	if (GetPlayerState()->GetPlayerId() == 1 && !GetPlayerState()->joined)
+		UE_LOG(LogTemp, Warning, TEXT("Player 2 join"));
+
+	if (!GetPlayerState()->ready && GetPlayerState()->joined)
+		_virtualKeyBoard->Select();
 }
 
-void USetUpUI::ButtonUpPressed_Player1()
+void USetUpUI::ButtonStartPressed()
 {
-	_playerOneVirtualKeyBoard->UptKey();
+	if (!_virtualKeyBoard->GetText().IsEmpty() && !GetPlayerState()->ready)
+	{
+		SetPlayerReady(true);
+	}
+	else if (_gameMode->GetPlayerManager()->AllPlayerIsReady())
+	{
+		UE_LOG(LogTemp, Warning, TEXT("GO TO GAMEPLAY"));
+	}
 }
 
-void USetUpUI::ButtonDownPressed_Player1()
+void USetUpUI::ButtonUpPressed()
 {
-	_playerOneVirtualKeyBoard->DownKey();
+	if (!GetPlayerState()->ready && GetPlayerState()->joined)
+		_virtualKeyBoard->UptKey();
 }
 
-void USetUpUI::ButtonLeftPressed_Player1()
+void USetUpUI::ButtonDownPressed()
 {
-	_playerOneVirtualKeyBoard->LefttKey();
+	if (!GetPlayerState()->ready && GetPlayerState()->joined)
+		_virtualKeyBoard->DownKey();
 }
 
-void USetUpUI::ButtonRightPressed_Player1()
+void USetUpUI::ButtonLeftPressed()
 {
-	_playerOneVirtualKeyBoard->RightKey();
+	if (!GetPlayerState()->ready && GetPlayerState()->joined)
+		_virtualKeyBoard->LefttKey();
+}
+
+void USetUpUI::ButtonRightPressed()
+{
+	if (!GetPlayerState()->ready && GetPlayerState()->joined)
+		_virtualKeyBoard->RightKey();
+}
+
+
+void USetUpUI::ButtonPPressed()
+{
+	if (_gameMode->GetPlayerManager()->GetPlayerCount() == 1)
+	{
+		_gameMode->GetPlayerManager()->CreatePlayer2(GetWorld());
+	}
+	else
+	{ 
+	
+	}
+}
+
+void USetUpUI::UpdateGeneralMessage()
+{
+	FString message;
+	if (GetPlayerState()->GetPlayerId() == 0 && _gameMode->GetPlayerManager()->PlayerTwoIsJoined())
+	{
+		if (_gameMode->GetPlayerManager()->AllPlayerIsReady())
+		{
+			message.Append("Press Start");
+		}
+		else if (_gameMode->GetPlayerManager()->PlayerOneIsReady())
+		{
+			message.Append("Waiting Player 2");
+		}
+		else if (_gameMode->GetPlayerManager()->PlayerTwoIsReady())
+		{
+			message.Append("Waiting Player 1");
+		}
+		else
+		{
+			message.Append("Waiting Players");
+		}
+	}
+	else if (GetPlayerState()->GetPlayerId() == 0)
+	{
+		if (_gameMode->GetPlayerManager()->PlayerOneIsReady())
+		{
+			message.Append("Press Start");
+		}
+		else
+		{
+			message.Append("Waiting Player 1");
+		}
+	}
+	_generalMessage->SetText(FText::FromString(message));
+}
+
+void USetUpUI::SetPlayerReady(bool isReady)
+{
+	_virtualKeyBoard->SetVisibility(isReady ? ESlateVisibility::Hidden : ESlateVisibility::Visible);
+	FString name = _virtualKeyBoard->GetText();
+	FString text;
+	text.Append(name);
+	text.Append(isReady ? " is Ready!" : "Write you name");
+	_textMesage->SetText(FText::FromString(text));
+	GetPlayerState()->ready = isReady;
+	GetPlayerState()->name = name;
+	UpdateGeneralMessage();
+}
+
+APState* USetUpUI::GetPlayerState()
+{
+	return GetOwningPlayer()->GetPlayerState<APState>();
 }

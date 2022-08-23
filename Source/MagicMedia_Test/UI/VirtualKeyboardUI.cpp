@@ -20,7 +20,7 @@ void UVirtualKeyboardUI::NativePreConstruct()
 		FString borderName = FString("Border");
 		borderName.Append(FString::FromInt(i));
 
-		UBorder* border = WidgetTree->ConstructWidget<UBorder>(UBorder::StaticClass(), FName(*borderName));
+		UBorder* border = WidgetTree->ConstructWidget<UBorder>(UBorder::StaticClass(), FName(*borderName));		
 		UGridSlot* btnSlot = _keyboardButtons->AddChildToGrid(border);
 		btnSlot->SetRow(int(i / COLUNM_COUNT));
 		btnSlot->SetColumn(i - (btnSlot->Row * COLUNM_COUNT));
@@ -39,17 +39,23 @@ void UVirtualKeyboardUI::NativePreConstruct()
 
 		UTextBlock* text = WidgetTree->ConstructWidget<UTextBlock>(UTextBlock::StaticClass(), FName(*TextName));
 		UScaleBoxSlot* textSlot = Cast<UScaleBoxSlot>(scaleBox->AddChild(text));
+		
 		textSlot->SetHorizontalAlignment(EHorizontalAlignment::HAlign_Fill);
 		textSlot->SetVerticalAlignment(EVerticalAlignment::VAlign_Fill);
 		text->SetText(FText::FromString(_letters[i]));
 		text->SetJustification(ETextJustify::Center);
-		text->SetColorAndOpacity(GetUnselecteColor());
 
 		_buttons[i] = new KeySlot{ border, text };
 	}
 
 	SetSelected(0);
 	Super::NativePreConstruct();
+}
+
+
+FString UVirtualKeyboardUI::GetText()
+{
+	return _textResult->Text.ToString();
 }
 
 
@@ -77,34 +83,15 @@ void UVirtualKeyboardUI::SetButtonCollors(SlotState slotState, KeySlot* keySlot)
 {
 	if (slotState == SlotState::SELECTED)
 	{
-		keySlot->_text->SetColorAndOpacity(GetSelectedColor());
+		keySlot->_border->SetBrushColor(borderSelectedColor);
+		keySlot->_text->SetColorAndOpacity(fontSelectedColor);
 	}
 	else if (slotState == SlotState::NOT_SELECTED)
 	{
-		keySlot->_text->SetColorAndOpacity(GetUnselecteColor());
+		keySlot->_border->SetBrushColor(borderUnselectedColor);
+		keySlot->_text->SetColorAndOpacity(fontUnselectedColor);
 	}
 }
-
-
-const FLinearColor UVirtualKeyboardUI::GetSelectedColor()
-{
-	FLinearColor color;
-	color.R = 0;
-	color.G = 0;
-	color.B = 0;
-	color.A = 1;
-	return color;
-}
-const FLinearColor UVirtualKeyboardUI::GetUnselecteColor()
-{
-	FLinearColor color;
-	color.R = 0;
-	color.G = 0;
-	color.B = 0;
-	color.A = .3f;
-	return color;
-}
-
 
 void UVirtualKeyboardUI::RightKey()
 {

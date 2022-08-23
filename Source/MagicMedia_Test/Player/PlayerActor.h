@@ -27,24 +27,28 @@ public:
 private:
 	FVector2D _rawLeftAxis;
 	FVector2D _rawRightAxis;
+
 };
 
 UCLASS()
 class MAGICMEDIA_TEST_API APlayerActor : public ACharacter
 {
 	GENERATED_BODY()
-
+	friend class UPlyerManager;
 public:
 	APlayerActor();
 
 protected:
 	virtual void BeginPlay() override;
+	virtual void Destroyed() override;
 
 public:	
 	virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
+	class APState* GetPState();
 private:
+	class AMainGameMode* _gameMode;
+
 	void CalculatePlayerXYMovement(float DeltaTime);
 	void CalculatePlayerYawRotation(float DeltaTime);
 	void CalculateCameraPitchRotation(float DeltaTime);

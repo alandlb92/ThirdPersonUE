@@ -45,19 +45,14 @@ public:
 
 	void ChangeScreen(UIType screenType);
 
-	virtual void ButtonBackPressed_Player1();
-	virtual void ButtonConfirmPressed_Player1();
-	virtual void ButtonUpPressed_Player1();
-	virtual void ButtonDownPressed_Player1();
-	virtual void ButtonLeftPressed_Player1();
-	virtual void ButtonRightPressed_Player1();
-
-	virtual void ButtonBackPressed_Player2();
-	virtual void ButtonConfirmPressed_Player2();
-	virtual void ButtonUpPressed_Player2();
-	virtual void ButtonDownPressed_Player2();
-	virtual void ButtonLeftPressed_Player2();
-	virtual void ButtonRightPressed_Player2();
+	virtual void ButtonBackPressed();
+	virtual void ButtonConfirmPressed();
+	virtual void ButtonStartPressed();
+	virtual void ButtonUpPressed();
+	virtual void ButtonDownPressed();
+	virtual void ButtonLeftPressed();
+	virtual void ButtonRightPressed();
+	virtual void ButtonPPressed();
 
 private:
 	std::function<void(UBaseUI*)> OnEnableInputs;

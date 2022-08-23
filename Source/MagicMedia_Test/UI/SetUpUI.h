@@ -4,39 +4,46 @@
 
 #include "CoreMinimal.h"
 #include "BaseUI.h"
+#include <functional>
 #include "Components/TextBlock.h"
 #include "Components/SizeBox.h"
 #include "VirtualKeyboardUI.h"
 #include "Kismet/GameplayStatics.h"
+#include "../Player/PState.h"
 #include "SetUpUI.generated.h"
 
-/**
- *
- */
+
 UCLASS()
 class MAGICMEDIA_TEST_API USetUpUI : public UBaseUI
 {
 	GENERATED_BODY()
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
-	UTextBlock* _playerOneTextMesage;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
-	UTextBlock* _playerTwoTextMesage;
+	UTextBlock* _generalMessage;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
-	UVirtualKeyboardUI* _playerOneVirtualKeyBoard;
+	UTextBlock* _textMesage;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
-	UVirtualKeyboardUI* _playerTwoVirtualKeyBoard;
+	UVirtualKeyboardUI* _virtualKeyBoard;
 
-	void NativeConstruct() override;
+	void NativeConstruct() override;	
+	void BeginPlay();
 
-	void ButtonBackPressed_Player1() override;
-	void ButtonConfirmPressed_Player1() override;
-	void ButtonUpPressed_Player1() override;
-	void ButtonDownPressed_Player1() override;
-	void ButtonLeftPressed_Player1() override;
-	void ButtonRightPressed_Player1() override;
+	void ButtonBackPressed() override;
+	void ButtonConfirmPressed() override;
+	void ButtonStartPressed() override;
 
+	void ButtonUpPressed() override;
+	void ButtonDownPressed() override;
+	void ButtonLeftPressed() override;
+	void ButtonRightPressed() override;
+	void ButtonPPressed() override;
 
-	void ButtonConfirmPressed_Player2() override;
+private:
+	void UpdateGeneralMessage();
+	void SetPlayerReady(bool isReady);
+	class AMainGameMode* _gameMode;
+
+	APState* GetPlayerState();
 };

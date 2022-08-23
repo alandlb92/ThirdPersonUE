@@ -2,7 +2,7 @@
 
 
 #include "BaseUI.h"
-#include "UIManager.h"
+#include "PlayerHUD.h"
 
 void UBaseUI::SetUp(BaseUiSetUp baseUiSetup)
 {
@@ -25,7 +25,6 @@ void UBaseUI::Close()
 
 void UBaseUI::CloseAnimationFinished()
 {
-	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, "Close");
 	SetVisibility(ESlateVisibility::Hidden);
 }
 
@@ -47,51 +46,35 @@ void UBaseUI::ChangeScreen(UIType screenType)
 		OnChangeScreen(screenType);
 }
 
-void UBaseUI::ButtonBackPressed_Player1()
+void UBaseUI::ButtonBackPressed()
 {
 }
 
-void UBaseUI::ButtonConfirmPressed_Player1()
+void UBaseUI::ButtonConfirmPressed()
 {
 }
 
-void UBaseUI::ButtonUpPressed_Player1()
+void UBaseUI::ButtonStartPressed()
 {
 }
 
-void UBaseUI::ButtonDownPressed_Player1()
+void UBaseUI::ButtonUpPressed()
 {
 }
 
-void UBaseUI::ButtonLeftPressed_Player1()
+void UBaseUI::ButtonDownPressed()
 {
 }
 
-void UBaseUI::ButtonRightPressed_Player1()
+void UBaseUI::ButtonLeftPressed()
 {
 }
 
-
-void UBaseUI::ButtonBackPressed_Player2()
+void UBaseUI::ButtonRightPressed()
 {
 }
 
-void UBaseUI::ButtonConfirmPressed_Player2()
+void UBaseUI::ButtonPPressed()
 {
 }
 
-void UBaseUI::ButtonUpPressed_Player2()
-{
-}
-
-void UBaseUI::ButtonDownPressed_Player2()
-{
-}
-
-void UBaseUI::ButtonLeftPressed_Player2()
-{
-}
-
-void UBaseUI::ButtonRightPressed_Player2()
-{
-}

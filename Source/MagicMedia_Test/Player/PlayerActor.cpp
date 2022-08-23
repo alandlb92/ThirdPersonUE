@@ -1,6 +1,9 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 #include "PlayerActor.h"
+#include "PState.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "Kismet/GameplayStatics.h"
+#include "../Gameplay/MainGameMode.h"
 
 void FPlayerInput::UpdateLeftAxisX(float x)
 {
@@ -64,8 +67,17 @@ void APlayerActor::BeginPlay()
 	Super::BeginPlay();
 	_playerInput.Enabled = false;
 	SetActorHiddenInGame(true);
-	GetCharacterMovement()->GravityScale = 0;
 	_animation = Cast<UPlayerAnimInstance>(GetMesh()->GetAnimInstance());
+	_gameMode = Cast<AMainGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
+	_gameMode->GetPlayerManager()->Register(this);
+}
+
+
+void APlayerActor::Destroyed()
+{
+	Super::Destroyed();
+	if (_gameMode && _gameMode->GetPlayerManager())
+		_gameMode->GetPlayerManager()->Unregister(this);
 }
 
 // Called every frame
@@ -148,4 +160,10 @@ void APlayerActor::InputMoveCameraX(float x)
 void APlayerActor::InputMoveCameraY(float y)
 {
 	_playerInput.UpdateRightAxisY(y);
+}
+
+
+class APState* APlayerActor::GetPState()
+{
+	return  GetPlayerState<APState>();
 }

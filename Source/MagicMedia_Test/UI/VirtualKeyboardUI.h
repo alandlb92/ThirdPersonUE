@@ -35,11 +35,23 @@ class MAGICMEDIA_TEST_API UVirtualKeyboardUI : public UBaseUI
 public:
 	void NativePreConstruct() override;
 
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
+	FLinearColor borderUnselectedColor;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
+	FLinearColor fontUnselectedColor;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
+	FLinearColor borderSelectedColor;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
+	FLinearColor fontSelectedColor;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
 	UTextBlock* _textResult;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
 	UGridPanel* _keyboardButtons;
+
+	FString GetText();
 
 	void RightKey();
 	void LefttKey();
@@ -59,8 +71,5 @@ private:
 	const FString _letters[27]	{ "q", "w", "e", "r", "t", "y", "u", "i", "o",
 								  "p", "a", "s", "d", "f", "g", "h", "j", "k",
 								  "l", "z", "x", "c", "v", "b", "n", "m", "_" };
-
-	const FLinearColor GetSelectedColor();
-	const FLinearColor GetUnselecteColor();
 
 };
