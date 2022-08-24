@@ -12,11 +12,9 @@ void UPressStartUI::AnimationStartPressedFinished()
 void UPressStartUI::ButtonConfirmPressed()
 {
 	CallStartPressed();
-	GetOwningPlayer<APlayerController>()->GetPlayerState<APState>()->joined = true;
 }
 
 void UPressStartUI::ButtonStartPressed()
 {
 	CallStartPressed();
-	GetOwningPlayer<APlayerController>()->GetPlayerState<APState>()->joined = true;
 }

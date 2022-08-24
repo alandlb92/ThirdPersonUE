@@ -15,10 +15,13 @@ class MAGICMEDIA_TEST_API UUIManager : public UObject
 	GENERATED_BODY()
 	friend class AMainGameMode;
 public:
+	void StartGameplay();
+
 	void Register(APlayerHUD* playerHUD);
 	void Unregister(APlayerHUD* playerHUD);
 	void ChangeAllPlayersScreen(UIType uiType);
 	void PlayerTwoIsEnable();
+	void UpdateAllSetUpWidget();
 
 private:
 	TArray<APlayerHUD*> _HUDS;

@@ -5,9 +5,16 @@
 #include "PState.h"
 #include "Kismet/GameplayStatics.h"
 
+
+void UPlyerManager::ResetPlayersIds()
+{
+	APState::_nextId = 0;
+}
+
 void UPlyerManager::Register(APlayerActor* player)
 {
 	_players.Push(player);
+	player->OnAdjustCameraOnStart = OnPlayerRegistered;
 }
 
 void UPlyerManager::Unregister(APlayerActor* player)
@@ -32,11 +39,17 @@ APlayerActor* UPlyerManager::GetPlayerByInputIndex(int index)
 
 bool UPlyerManager::AllPlayerIsReady()
 {
+	if (_players.Num() == 0)
+		return false;
+
 	bool result = true;
 	for (APlayerActor* player : _players)
 	{
+		if (!player)
+			continue;
+
 		APState* pState = player->GetController()->GetPlayerState<APState>();
-		if (pState->joined)
+		if (pState)
 			result &= pState->ready;
 	}
 	return result;
@@ -61,8 +74,16 @@ bool UPlyerManager::PlayerTwoIsReady()
 
 bool UPlyerManager::PlayerTwoIsJoined()
 {
-	APlayerActor* player = GetPlayerByInputIndex(1);
-	if (player)
-		return player->GetPState()->joined;
-	else return false;
+	return _players.Num() > 1;
+}
+
+
+void UPlyerManager::StartGameplay()
+{
+	for (APlayerActor* player : _players)
+	{
+		if (!player)
+			continue;
+		player->StartGameplay();
+	}
 }

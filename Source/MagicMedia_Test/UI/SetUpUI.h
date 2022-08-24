@@ -28,10 +28,6 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
 	UVirtualKeyboardUI* _virtualKeyBoard;
 
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
-	USpacer* _player2Spacer;
-
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
 	UBorder* _player2Box;
 
@@ -49,9 +45,10 @@ public:
 	void ButtonPPressed() override;
 
 	void DisableAddPlayerTwoBox();
+	void UpdateGeneralMessage();
 
 private:
-	void UpdateGeneralMessage();
+	void UpdateAllGeneralMessage();
 	void SetPlayerReady(bool isReady);
 	class AMainGameMode* _gameMode;
 

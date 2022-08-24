@@ -70,8 +70,15 @@ void APlayerActor::BeginPlay()
 	_animation = Cast<UPlayerAnimInstance>(GetMesh()->GetAnimInstance());
 	_gameMode = Cast<AMainGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
 	_gameMode->GetPlayerManager()->Register(this);
+	UE_LOG(LogTemp, Warning, TEXT("BeginPlayer"));
 }
 
+void APlayerActor::StartGameplay()
+{
+	GetPlayerState()->GetPlayerController()->SetViewTargetWithBlend(this, 1);
+	_playerInput.Enabled = true;
+	SetActorHiddenInGame(false);
+}
 
 void APlayerActor::Destroyed()
 {
@@ -83,6 +90,12 @@ void APlayerActor::Destroyed()
 // Called every frame
 void APlayerActor::Tick(float DeltaTime)
 {
+	if (GetLocalViewingPlayerController() && !camereSeted)
+	{
+		camereSeted = true;
+		OnAdjustCameraOnStart.Broadcast(this);
+	}
+
 	Super::Tick(DeltaTime);
 	_playerInput.Sanitize();
 	CalculatePlayerXYMovement(DeltaTime);

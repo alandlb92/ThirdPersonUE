@@ -2,33 +2,22 @@
 
 
 #include "StartCameraComponent.h"
+#include "../Player/PlayerActor.h"
+#include "Kismet/GameplayStatics.h"
+#include "../Gameplay/MainGameMode.h"
 
-// Sets default values for this component's properties
 UStartCameraComponent::UStartCameraComponent()
 {
-	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
-	// off to improve performance if you don't need them.
-	PrimaryComponentTick.bCanEverTick = true;
-
-	// ...
+	PrimaryComponentTick.bCanEverTick = false;
 }
 
-
-// Called when the game starts
 void UStartCameraComponent::BeginPlay()
 {
 	Super::BeginPlay();
-	GetWorld()->GetFirstPlayerController()->SetViewTarget(GetOwner());
-	// ...
-	
+	Cast<AMainGameMode>(UGameplayStatics::GetGameMode(GetWorld()))->GetPlayerManager()->OnPlayerRegistered.AddUObject(this, &UStartCameraComponent::OnPlayerRegistered);
 }
 
-
-// Called every frame
-void UStartCameraComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
+void UStartCameraComponent::OnPlayerRegistered(APlayerActor* playerController)
 {
-	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-
-	// ...
+	playerController->GetPlayerState()->GetPlayerController()->SetViewTarget(GetOwner());
 }
-

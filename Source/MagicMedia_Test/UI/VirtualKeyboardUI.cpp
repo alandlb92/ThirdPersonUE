@@ -124,9 +124,11 @@ void UVirtualKeyboardUI::UptKey()
 {
 	int lastColun = int((LETTERS_COUNT - 1) / COLUNM_COUNT);
 	int nextKey = _indexSelected - COLUNM_COUNT;
-	int nextColun = (int)(nextKey / COLUNM_COUNT);
+	
 
-	if (nextColun < 0)
+	UE_LOG(LogTemp, Warning, TEXT("last colun: %i, Next key: %i"), lastColun, nextKey);
+
+	if (nextKey < 0)
 		nextKey += (COLUNM_COUNT * (lastColun + 1));
 
 	SetSelected(nextKey);

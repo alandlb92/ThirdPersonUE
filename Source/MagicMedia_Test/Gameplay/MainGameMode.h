@@ -17,6 +17,7 @@ class MAGICMEDIA_TEST_API AMainGameMode : public AGameModeBase
 	GENERATED_BODY()
 public:
 	void StartPlay() override;
+	void StartGameplay();
 	UPlyerManager* GetPlayerManager();
 	UUIManager* GetHUDManager();
 

@@ -27,7 +27,7 @@ public:
 };
 
 UCLASS()
-class MAGICMEDIA_TEST_API UVirtualKeyboardUI : public UBaseUI
+class MAGICMEDIA_TEST_API UVirtualKeyboardUI : public UUserWidget
 {
 	GENERATED_BODY()
 

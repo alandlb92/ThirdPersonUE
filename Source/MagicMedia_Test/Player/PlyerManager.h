@@ -2,14 +2,14 @@
 
 #pragma once
 
+#include "GameFramework/PlayerController.h"
 #include "CoreMinimal.h"
 #include "PlayerActor.h"
 #include "UObject/NoExportTypes.h"
 #include "PlyerManager.generated.h"
 
-/**
- * 
- */
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnPlayerRegistered, APlayerActor*)
+
 UCLASS()
 class MAGICMEDIA_TEST_API UPlyerManager : public UObject
 {
@@ -17,6 +17,9 @@ class MAGICMEDIA_TEST_API UPlyerManager : public UObject
 	friend class AMainGameMode;
 
 public:
+	FOnPlayerRegistered OnPlayerRegistered;
+
+	void StartGameplay();
 	APlayerActor* GetPlayerByInputIndex(int index);
 	bool AllPlayerIsReady();
 	bool PlayerOneIsReady();
@@ -28,5 +31,6 @@ public:
 	void CreatePlayer2(UWorld* world);	
 
 private:
+	void ResetPlayersIds();
 	TArray<APlayerActor*> _players;
 };

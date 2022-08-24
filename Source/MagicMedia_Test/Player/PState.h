@@ -13,11 +13,10 @@ UCLASS()
 class MAGICMEDIA_TEST_API APState : public APlayerState
 {
 	GENERATED_BODY()
+	friend class UPlyerManager;
 
 public:
 	void BeginPlay() override;
-
-	bool joined = false;
 	bool ready = false;
 	FString name;
 

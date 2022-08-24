@@ -45,6 +45,23 @@ void APlayerHUD::BeginPlay()
 		}
 	}
 
+	if (_gamePlayUI)
+	{
+		if (_gamePlayInstace == nullptr)
+			_gamePlayInstace = CreateWidget<UGameplayUI, APlayerController>(PlayerOwner, _gamePlayUI);
+
+		if (_gamePlayInstace != nullptr)
+		{
+			_gamePlayInstace->AddToPlayerScreen();
+			_gamePlayInstace->SetUp(BaseUiSetUp{
+					std::bind(&APlayerHUD::EnableInput, this, std::placeholders::_1),
+					std::bind(&APlayerHUD::DisableInput, this),
+					std::bind(&APlayerHUD::ChangeScreen, this, std::placeholders::_1)
+				});
+		}
+	}
+
+
 	SetUpInputComponent();
 	_setUpInstance->BeginPlay();
 	if (PlayerOwner->GetPlayerState<APState>()->GetPlayerId() == 0)
@@ -82,7 +99,6 @@ void APlayerHUD::DisableInput()
 	_currentUIinControll = nullptr;
 }
 
-
 void APlayerHUD::ChangeScreen(UIType uiType)
 {
 	if (_lastUIControll)
@@ -98,7 +114,8 @@ void APlayerHUD::ChangeScreen(UIType uiType)
 		if (_setUpInstance)
 			_setUpInstance->Open();
 		break;
-	case UIType::HUD:
+	case UIType::GAMEPLAY:
+		_gamePlayInstace->Open();
 		break;
 	}
 }

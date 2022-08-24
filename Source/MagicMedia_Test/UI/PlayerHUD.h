@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/HUD.h"
 #include "PressStartUI.h"
+#include "GameplayUI.h"
 #include "SetUpUI.h"
 #include "PlayerHUD.generated.h"
 
@@ -14,7 +15,7 @@ enum UIType
 {
 	START,
 	SETUP,
-	HUD
+	GAMEPLAY
 };
 
 UCLASS()
@@ -22,12 +23,15 @@ class MAGICMEDIA_TEST_API APlayerHUD : public AHUD
 {
 	GENERATED_BODY()
 	friend class UUIManager;
+
 public:
 	void BeginPlay() override;
 	UPROPERTY(EditDefaultsOnly, Category = "Widgets")
 	TSubclassOf<UPressStartUI> _pressStartUI;
 	UPROPERTY(EditDefaultsOnly, Category = "Widgets")
 	TSubclassOf<USetUpUI> _setUpUI;
+	UPROPERTY(EditDefaultsOnly, Category = "Widgets")
+	TSubclassOf<UGameplayUI> _gamePlayUI;
 
 	void PlayerTwoIsEnable();
 
@@ -40,6 +44,7 @@ private:
 	UBaseUI* _lastUIControll;
 	UPressStartUI* _pressStartInstance;
 	USetUpUI* _setUpInstance;
+	UGameplayUI* _gamePlayInstace;
 
 	void EnableInput(UBaseUI* UIReference);
 	void DisableInput();

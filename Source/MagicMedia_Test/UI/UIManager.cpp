@@ -28,3 +28,23 @@ void UUIManager::PlayerTwoIsEnable()
 		hud->PlayerTwoIsEnable();
 	}
 }
+
+void UUIManager::UpdateAllSetUpWidget()
+{
+	for (APlayerHUD* hud : _HUDS)
+	{
+		hud->_setUpInstance->UpdateGeneralMessage();
+	}
+}
+
+
+void UUIManager::StartGameplay()
+{
+	for (APlayerHUD* hud : _HUDS)
+	{
+		if (!hud)
+			continue;
+		hud->_currentUIinControll->DisableInputs();
+		hud->ChangeScreen(UIType::GAMEPLAY);
+	}
+}

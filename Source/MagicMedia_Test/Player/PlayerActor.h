@@ -30,6 +30,9 @@ private:
 
 };
 
+
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnPlayerBegin, APlayerActor*)
+
 UCLASS()
 class MAGICMEDIA_TEST_API APlayerActor : public ACharacter
 {
@@ -47,6 +50,9 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	class APState* GetPState();
 private:
+	bool camereSeted;
+
+	FOnPlayerBegin OnAdjustCameraOnStart;
 	class AMainGameMode* _gameMode;
 
 	void CalculatePlayerXYMovement(float DeltaTime);
@@ -58,8 +64,8 @@ private:
 	void InputMoveY(float y);
 	void InputMoveCameraX(float x);
 	void InputMoveCameraY(float y);
+	void StartGameplay();
 
-	
 	UPlayerAnimInstance* _animation;
 	FPlayerInput _playerInput;
 
