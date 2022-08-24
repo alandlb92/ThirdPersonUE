@@ -14,8 +14,8 @@ void APlayerHUD::BeginPlay()
 
 	if (_pressStartUI && PlayerOwner == GetWorld()->GetFirstPlayerController())
 	{
-		if (_pressStartInstance == nullptr)
-			_pressStartInstance = CreateWidget<UPressStartUI>(PlayerOwner, _pressStartUI);
+			if (_pressStartInstance == nullptr)
+				_pressStartInstance = CreateWidget<UPressStartUI, APlayerController>(PlayerOwner, _pressStartUI);
 		if (_pressStartInstance != nullptr)
 		{
 			_pressStartInstance->AddToPlayerScreen();
@@ -30,10 +30,12 @@ void APlayerHUD::BeginPlay()
 	if (_setUpUI)
 	{
 		if (_setUpInstance == nullptr)
-			_setUpInstance = CreateWidget<USetUpUI>(PlayerOwner, _setUpUI);
+			_setUpInstance = CreateWidget<USetUpUI, APlayerController>(PlayerOwner, _setUpUI);
+
+
 
 		if (_setUpInstance != nullptr)
-		{			
+		{
 			_setUpInstance->AddToPlayerScreen();
 			_setUpInstance->SetUp(BaseUiSetUp{
 					std::bind(&APlayerHUD::EnableInput, this, std::placeholders::_1),
