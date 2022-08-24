@@ -17,5 +17,6 @@ class MAGICMEDIA_TEST_API UPlayerLabelWidget : public UUserWidget
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
 	UTextBlock* _playerNameText;
+	void SetLabel(FString text);
 	
 };

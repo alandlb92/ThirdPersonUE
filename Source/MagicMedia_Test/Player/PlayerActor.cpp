@@ -43,6 +43,12 @@ APlayerActor::APlayerActor()
 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	_widget3D = CreateAbstractDefaultSubobject<UWidgetComponent>(TEXT("Widget"));	
+	_widget3D->AddWorldRotation(FRotator(0, 0, 0));
+	_widget3D->SetupAttachment(RootComponent);
+	_widget3D->SetRelativeLocation(FVector(0, 0, 0));
+	_widget3D->SetUsingAbsoluteRotation(true);
+
 	_cameraSpringArm = CreateAbstractDefaultSubobject<USpringArmComponent>(TEXT("CameraSpringArm"));
 	_cameraSpringArm->SetupAttachment(RootComponent);
 	_cameraSpringArm->TargetArmLength = 400.0f;
@@ -70,14 +76,16 @@ void APlayerActor::BeginPlay()
 	_animation = Cast<UPlayerAnimInstance>(GetMesh()->GetAnimInstance());
 	_gameMode = Cast<AMainGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
 	_gameMode->GetPlayerManager()->Register(this);
-	UE_LOG(LogTemp, Warning, TEXT("BeginPlayer"));
 }
 
 void APlayerActor::StartGameplay()
 {
+	_labelWidgetInstance = Cast<UPlayerLabelWidget>(_widget3D->GetWidget());
 	GetPlayerState()->GetPlayerController()->SetViewTargetWithBlend(this, 1);
 	_playerInput.Enabled = true;
 	SetActorHiddenInGame(false);
+	if (_labelWidgetInstance)
+		_labelWidgetInstance->SetLabel(GetPState()->name);
 }
 
 void APlayerActor::Destroyed()

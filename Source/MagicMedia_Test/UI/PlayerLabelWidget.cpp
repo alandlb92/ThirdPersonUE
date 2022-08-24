@@ -3,3 +3,8 @@
 
 #include "PlayerLabelWidget.h"
 
+
+void UPlayerLabelWidget::SetLabel(FString text)
+{
+	_playerNameText->SetText(FText::FromString(text));
+}

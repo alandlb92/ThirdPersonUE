@@ -8,6 +8,8 @@
 #include "Camera/CameraComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "PlayerAnimInstance.h"
+#include "Components/WidgetComponent.h"
+#include "../UI/PlayerLabelWidget.h"
 #include "PlayerActor.generated.h"
 
 
@@ -45,11 +47,13 @@ protected:
 	virtual void BeginPlay() override;
 	virtual void Destroyed() override;
 
-public:	
+public:
 	virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	class APState* GetPState();
 private:
+	UPlayerLabelWidget* _labelWidgetInstance;
+
 	bool camereSeted;
 
 	FOnPlayerBegin OnAdjustCameraOnStart;
@@ -78,6 +82,9 @@ private:
 	float _maxCameraSpeedRotation;
 	
 	float _currentSpeed;
+
+	UPROPERTY(EditAnywhere)
+	UWidgetComponent* _widget3D;
 
 	UPROPERTY(EditAnywhere)
 	USpringArmComponent* _cameraSpringArm;	
