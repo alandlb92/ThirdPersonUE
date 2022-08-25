@@ -27,13 +27,19 @@ public:
 	TSubclassOf<UGameplayUI> _gamePlayUI;
 
 	void PlayerTwoIsEnable();
+	
+	void EnableInteractMsg();
+	void DisableInteractMsg();
+	void ShowText(FString text);
+	void HideText();
+	bool IsShowingMessage;
+
 
 private:
 	void ClearAllActions();
 	void SetUpInputComponent();
 
 	class UHUDManager* _hudManager;
-
 	UUIBase* _currentUIinControll;
 	UUIBase* _lastUIControll;
 	UPressStartUI* _pressStartInstance;

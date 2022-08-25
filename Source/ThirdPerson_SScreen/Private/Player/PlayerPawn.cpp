@@ -16,6 +16,8 @@
 #include "GameFramework/PlayerState.h"
 #include "Player/Pstate.h"
 #include "Managers/PlayerManager.h"
+#include "Managers/HUDManager.h"
+#include "Player/PlayerHUD.h"
 
 void FPlayerInput::UpdateLeftAxisX(float x)
 {
@@ -190,23 +192,31 @@ void APlayerPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 
 void APlayerPawn::SetCanInteractWith(AInteractableBase* interactable)
 {
-	UE_LOG(LogTemp, Warning, TEXT("SetCanInteractWith %s"), interactable ? TEXT("True") : TEXT("False"));
 	_interactableHandler = interactable;
+	APlayerHUD* hud = _gameMode->GetHUDManager()->GetHudFromPlayer(GetPState()->GetPlayerId());
+	if (hud)
+		hud->EnableInteractMsg();
 }
 
 void APlayerPawn::SetCleanInteractable()
 {
+	if (_interactableHandler)
+		_interactableHandler->Desinteract(GetPState()->GetPlayerId());
+
 	_interactableHandler = nullptr;
+	APlayerHUD* hud = _gameMode->GetHUDManager()->GetHudFromPlayer(GetPState()->GetPlayerId());
+	if (hud)
+		hud->DisableInteractMsg();
 }
 
 void APlayerPawn::InputMoveX(float x)
 {
 	_playerInput.UpdateLeftAxisX(x);
+	
 }
 
 void APlayerPawn::Interact()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Interact"));
 	if (_interactableHandler && _playerInput.Enabled)
 		_interactableHandler->Interact(GetPState()->GetPlayerId());
 }

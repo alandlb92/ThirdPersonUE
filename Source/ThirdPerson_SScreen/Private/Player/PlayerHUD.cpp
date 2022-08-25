@@ -10,6 +10,8 @@
 
 void APlayerHUD::BeginPlay()
 {
+	IsShowingMessage = false;
+
 	Super::BeginPlay();
 
 	_hudManager = Cast<AThirdPerson_SScreenGameModeBase>(UGameplayStatics::GetGameMode(GetWorld()))->GetHUDManager();
@@ -61,6 +63,9 @@ void APlayerHUD::BeginPlay()
 					std::bind(&APlayerHUD::DisableInput, this),
 					std::bind(&APlayerHUD::ChangeScreen, this, std::placeholders::_1)
 				});
+
+			_gamePlayInstace->DisableInteractMsg();
+			_gamePlayInstace->HideText();
 		}
 	}
 
@@ -76,6 +81,37 @@ void APlayerHUD::BeginPlay()
 void APlayerHUD::PlayerTwoIsEnable()
 {
 	_setUpInstance->DisableAddPlayerTwoBox();
+}
+
+
+void APlayerHUD::EnableInteractMsg()
+{
+	if (_gamePlayInstace != nullptr)
+		_gamePlayInstace->EnableInteractMsg();
+}
+
+void APlayerHUD::DisableInteractMsg()
+{
+	if (_gamePlayInstace != nullptr)
+		_gamePlayInstace->DisableInteractMsg();
+}
+
+void APlayerHUD::ShowText(FString text)
+{
+	if (_gamePlayInstace != nullptr)
+	{
+		_gamePlayInstace->ShowText(text);
+		IsShowingMessage = true;
+	}
+}
+
+void APlayerHUD::HideText()
+{
+	if (_gamePlayInstace != nullptr)
+	{
+		_gamePlayInstace->HideText();
+		IsShowingMessage = false;
+	}
 }
 
 void APlayerHUD::ClearAllActions()

@@ -6,6 +6,7 @@
 #include "Player/PlayerPawn.h"
 #include "../ThirdPerson_SScreenGameModeBase.h" 
 #include "Managers/InteractableManager.h"
+#include "Player/PlayerHUD.h"
 
 
 // Sets default values
@@ -54,6 +55,7 @@ void AInteractableBase::Destroyed()
 		_gameMode->GetInteractableManager()->Unregister(this);
 }
 
+
 // Called every frame
 void AInteractableBase::Tick(float DeltaTime)
 {
@@ -61,18 +63,30 @@ void AInteractableBase::Tick(float DeltaTime)
 
 }
 
+void AInteractableBase::EnableUI()
+{
+	_widget3D->SetVisibility(true);
+}
+
+void AInteractableBase::DisableUI()
+{
+	_widget3D->SetVisibility(false);
+}
 
 void AInteractableBase::Interact(int playerId)
 {
-	UE_LOG(LogTemp, Warning, TEXT("Interact"));
+}
+
+void AInteractableBase::Desinteract(int playerId)
+{
 }
 
 
 void AInteractableBase::OnTriggerOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	UE_LOG(LogTemp, Warning, TEXT("OnTriggerOverlapBegin"));
 	playersInteractingCount++;
 	_widget3D->SetVisibility(false);
+	DisableUI();
 
 	APlayerPawn* Player = Cast<APlayerPawn>(OtherActor);
 	if (Player)
@@ -87,8 +101,7 @@ void AInteractableBase::OnTriggerOverlapEnd(UPrimitiveComponent* OverlappedCompo
 		UE_LOG(LogTemp, Warning, TEXT("OnTriggerOverlapEnd"));
 		playersInteractingCount--;
 		if (playersInteractingCount <= 0)
-			_widget3D->SetVisibility(true);
-
+			EnableUI();
 		Player->SetCleanInteractable();
 	}
 }

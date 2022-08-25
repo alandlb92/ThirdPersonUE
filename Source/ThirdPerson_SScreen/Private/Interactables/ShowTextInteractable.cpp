@@ -11,8 +11,10 @@ void AShowTextInteractable::BeginPlay()
 
 void AShowTextInteractable::Interact(int playerId)
 {
-
-	Super::Interact(playerId);
-	UE_LOG(LogTemp, Warning, TEXT("AShowTextInteratable Interact"));
 	OnPlayerInteract.Broadcast(playerId, textToShow);
+}
+
+void AShowTextInteractable::Desinteract(int playerId)
+{
+	OnPlayerDesinteract.Broadcast(playerId);
 }

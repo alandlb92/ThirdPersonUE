@@ -30,6 +30,17 @@ void UHUDManager::PlayerTwoIsEnable()
 	}
 }
 
+APlayerHUD* UHUDManager::GetHudFromPlayer(int id)
+{
+	for (APlayerHUD* hud : _HUDS)
+	{
+		if (hud->PlayerOwner->PlayerState->GetPlayerId() == id)
+			return hud;
+	}
+
+	return nullptr;
+}
+
 void UHUDManager::UpdateAllSetUpWidget()
 {
 	for (APlayerHUD* hud : _HUDS)
@@ -55,5 +66,17 @@ void UHUDManager::StartGameplay()
 
 void UHUDManager::ShowText(int playerId, FString text)
 {
-	UE_LOG(LogTemp, Warning, TEXT("SHOW TEXT ON PLAYER: %i -> %s"), playerId, *text);
+	APlayerHUD* hud = GetHudFromPlayer(playerId);
+	if (hud && hud->IsShowingMessage)
+		hud->HideText();
+	else if (hud)
+		hud->ShowText(text);
+}
+
+void UHUDManager::HideTextIfIsShowing(int playerId)
+{
+
+	APlayerHUD* hud = GetHudFromPlayer(playerId);
+	if (hud && hud->IsShowingMessage)
+		hud->HideText();
 }

@@ -17,11 +17,14 @@ class THIRDPERSON_SSCREEN_API AShowTextInteractable : public AInteractableBase
 	friend class UInteractableManager;
 
 public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FString textToShow;
 	virtual void BeginPlay() override;
 	virtual void Interact(int playerId) override;
+	virtual void Desinteract(int playerId) override;
 
 private:
 	FOnPlayerShowTextInteract OnPlayerInteract;
+	FOnPlayerHideTextIfShowing OnPlayerDesinteract;
 	
 };

@@ -10,11 +10,13 @@
 
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnPlayerRegistered, APlayerPawn*);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnPlayerShowTextInteract, int, playerId, FString, text);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnPlayerHideTextIfShowing, int, playerId);
 
 UCLASS()
 class THIRDPERSON_SSCREEN_API AThirdPerson_SScreenGameModeBase : public AGameModeBase
 {
 	GENERATED_BODY()
+		
 public:
 	void StartPlay() override;
 	void StartGameplay();
@@ -23,6 +25,7 @@ public:
 	class UInteractableManager* GetInteractableManager();
 
 private:
+	bool GamePlayStarts;
 	UPlayerManager* _playerManager;
 	UHUDManager* _HUDManager;
 	UInteractableManager* _interactableManager;

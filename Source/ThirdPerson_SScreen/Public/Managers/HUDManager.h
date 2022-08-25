@@ -19,9 +19,12 @@ public:
 	void ChangeAllPlayersScreen(UIType uiType);
 	void PlayerTwoIsEnable();
 	void UpdateAllSetUpWidget();
+	class APlayerHUD* GetHudFromPlayer(int id);
 
 	UFUNCTION()
 	void ShowText(int playerId, FString text);
+	UFUNCTION()
+	void HideTextIfIsShowing(int playerId);
 
 private:
 	TArray<class APlayerHUD*> _HUDS;

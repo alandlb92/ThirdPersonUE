@@ -37,7 +37,11 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 	virtual void Interact(int playerId);
+	virtual void Desinteract(int playerId);
 
+
+	void EnableUI();
+	void DisableUI();
 
 private:
 	int playersInteractingCount = 0;
