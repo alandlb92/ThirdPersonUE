@@ -6,6 +6,22 @@
 #include "Player/PlayerPawn.h"
 #include "Kismet/GameplayStatics.h"
 
+void FPlayerContainer::AddPlayer(APlayerPawn* player)
+{
+	_players.Push(player);
+}
+
+void FPlayerContainer::RemovePlayer(APlayerPawn* player)
+{
+	_players.Remove(player);
+}
+
+int FPlayerContainer::GetCount()
+{
+	return _players.Num();
+}
+
+
 void UPlayerManager::ResetPlayersIds()
 {
 	APState::_nextId = 0;
@@ -13,13 +29,17 @@ void UPlayerManager::ResetPlayersIds()
 
 void UPlayerManager::Register(APlayerPawn* player)
 {
-	_players.Push(player);
-	player->OnAdjustCameraOnStart = OnPlayerRegistered;
+	if (player)
+	{
+		_playerContainer.AddPlayer(player);
+		//player->OnAdjustCameraOnStart = &OnPlayerRegistered;
+	}
 }
 
 void UPlayerManager::Unregister(APlayerPawn* player)
 {
-	_players.Remove(player);
+	if (player)
+		_playerContainer.RemovePlayer(player);
 }
 
 void UPlayerManager::CreatePlayer2(UWorld* world)
@@ -29,7 +49,7 @@ void UPlayerManager::CreatePlayer2(UWorld* world)
 
 APlayerPawn* UPlayerManager::GetPlayerByInputIndex(int index)
 {
-	for (APlayerPawn* player : _players)
+	for (APlayerPawn* player : _playerContainer._players)
 	{
 		if (player->GetPState()->PlayerId == index)
 			return player;
@@ -39,11 +59,11 @@ APlayerPawn* UPlayerManager::GetPlayerByInputIndex(int index)
 
 bool UPlayerManager::AllPlayerIsReady()
 {
-	if (_players.Num() == 0)
+	if (_playerContainer.GetCount() == 0)
 		return false;
 
 	bool result = true;
-	for (APlayerPawn* player : _players)
+	for (APlayerPawn* player : _playerContainer._players)
 	{
 		if (!player)
 			continue;
@@ -74,13 +94,13 @@ bool UPlayerManager::PlayerTwoIsReady()
 
 bool UPlayerManager::PlayerTwoIsJoined()
 {
-	return _players.Num() > 1;
+	return _playerContainer.GetCount() > 1;
 }
 
 
 void UPlayerManager::StartGameplay()
 {
-	for (APlayerPawn* player : _players)
+	for (APlayerPawn* player : _playerContainer._players)
 	{
 		if (!player)
 			continue;

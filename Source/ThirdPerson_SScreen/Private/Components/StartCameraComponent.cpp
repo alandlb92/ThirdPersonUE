@@ -6,7 +6,7 @@
 #include "Managers/PlayerManager.h"
 #include "Kismet/GameplayStatics.h"
 #include "GameFramework/PlayerState.h"
-#include "../ThirdPerson_SScreenGameModeBase.h"
+#include "Managers/LevelManager.h"
 
 // Sets default values for this component's properties
 UStartCameraComponent::UStartCameraComponent()
@@ -18,8 +18,6 @@ UStartCameraComponent::UStartCameraComponent()
 void UStartCameraComponent::BeginPlay()
 {
 	Super::BeginPlay();
-	Cast<AThirdPerson_SScreenGameModeBase>(UGameplayStatics::GetGameMode(GetWorld()))->GetPlayerManager()->OnPlayerRegistered.AddUObject(this, &UStartCameraComponent::OnPlayerRegistered);
-
 }
 
 void UStartCameraComponent::OnPlayerRegistered(APlayerPawn* player)

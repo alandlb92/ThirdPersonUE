@@ -11,7 +11,7 @@ UCLASS()
 class THIRDPERSON_SSCREEN_API UInteractableManager : public UObject
 {
 	GENERATED_BODY()
-	friend class AThirdPerson_SScreenGameModeBase;
+	friend class ALevelManager;
 
 public:
 	void Register(class AInteractableBase* interactable);
@@ -22,5 +22,6 @@ public:
 private:
 	bool* gamePlayStarts;
 	void StartGameplay();
+	UPROPERTY()
 	TArray<class AInteractableBase*> _interactables;
 };

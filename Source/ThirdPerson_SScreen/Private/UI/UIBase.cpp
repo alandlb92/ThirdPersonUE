@@ -4,16 +4,14 @@
 #include "UI/UIBase.h"
 
 
-void UUIBase::SetUp(BaseUiSetUp baseUiSetup)
+void UUIBase::SetUp()
 {
-	OnEnableInputs = baseUiSetup._onEnableInputs;
-	OnDisableInputs = baseUiSetup._onDisableInputs;
-	OnChangeScreen = baseUiSetup._onChangeScreen;
 	CloseAnimationFinished();
 }
 
 void UUIBase::Open()
 {
+	SetVisibility(ESlateVisibility::Collapsed);
 	SetVisibility(ESlateVisibility::Visible);
 	CallOpenAnimation();
 }
@@ -25,26 +23,24 @@ void UUIBase::Close()
 
 void UUIBase::CloseAnimationFinished()
 {
+	SetVisibility(ESlateVisibility::Collapsed);
 	SetVisibility(ESlateVisibility::Hidden);
 }
 
 void UUIBase::EnableInputs()
 {
-	if (OnEnableInputs)
-		OnEnableInputs(this);
+	OnEnableInputs.Broadcast(this);
 }
 
 void UUIBase::DisableInputs()
 {
-	if (OnDisableInputs)
-		OnDisableInputs();
+	OnDisableInputs.Broadcast();
 }
 
 void UUIBase::ChangeScreen(UIType screenType)
 {
 	UE_LOG(LogTemp, Warning, TEXT("ChangeScreen"));
-	if (OnChangeScreen)
-		OnChangeScreen(screenType);
+	OnChangeScreen.Broadcast(screenType);
 }
 
 void UUIBase::ButtonBackPressed()

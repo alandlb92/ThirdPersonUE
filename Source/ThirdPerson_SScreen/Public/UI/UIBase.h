@@ -6,45 +6,42 @@
 #include "Blueprint/UserWidget.h"
 #include "UIBase.generated.h"
 
-
-enum UIType
+UENUM()
+enum class UIType : uint8
 {
 	START,
 	SETUP,
 	GAMEPLAY
 };
 
-struct BaseUiSetUp
-{
-public:
-	std::function<void(UUIBase*)> _onEnableInputs;
-	std::function<void()> _onDisableInputs;
-	std::function<void(enum UIType)> _onChangeScreen;
-};
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnDisableInputs);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnEnableInputs, UUIBase*, ui);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnChangeScreen, UIType, uiType);
 
 UCLASS()
 class THIRDPERSON_SSCREEN_API UUIBase : public UUserWidget
 {
 	GENERATED_BODY()
 public:
-	void SetUp(BaseUiSetUp baseUiSetup);
+	virtual void SetUp();
 	void Open();
 	void Close();
 
 	UFUNCTION(BlueprintImplementableEvent)
-	void CallOpenAnimation();
+		void CallOpenAnimation();
 
 	UFUNCTION(BlueprintImplementableEvent)
-	void CallCloseAnimation();
+		void CallCloseAnimation();
 
 	UFUNCTION(BlueprintCallable, Category = "Base UI")
-	void EnableInputs();
+		void EnableInputs();
 
 	UFUNCTION(BlueprintCallable, Category = "Base UI")
-	void DisableInputs();
+		void DisableInputs();
 
 	UFUNCTION(BlueprintCallable, Category = "Base UI")
-	void CloseAnimationFinished();
+		void CloseAnimationFinished();
 
 	void ChangeScreen(UIType screenType);
 
@@ -57,8 +54,8 @@ public:
 	virtual void ButtonRightPressed();
 	virtual void ButtonPPressed();
 
-private:
-	std::function<void(UUIBase*)> OnEnableInputs;
-	std::function<void()> OnDisableInputs;
-	std::function<void(UIType)> OnChangeScreen;
+
+	FOnEnableInputs OnEnableInputs;
+	FOnDisableInputs OnDisableInputs;
+	FOnChangeScreen OnChangeScreen;
 };

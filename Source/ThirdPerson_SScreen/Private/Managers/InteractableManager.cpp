@@ -7,21 +7,24 @@
 
 void UInteractableManager::Register(AInteractableBase* interactable)
 {
-	_interactables.Push(interactable);
+	if (interactable) {
+		_interactables.Push(interactable);
 
-	AShowTextInteractable* showTextInteractable = Cast<AShowTextInteractable>(interactable);
-	if (showTextInteractable) {
-		showTextInteractable->OnPlayerInteract = OnShowTextInteract;
-		showTextInteractable->OnPlayerDesinteract = OnHideTextIfShowing;
+		AShowTextInteractable* showTextInteractable = Cast<AShowTextInteractable>(interactable);
+		if (showTextInteractable) {
+			showTextInteractable->OnPlayerInteract = OnShowTextInteract;
+			showTextInteractable->OnPlayerDesinteract = OnHideTextIfShowing;
+		}
+
+		if (!*gamePlayStarts)
+			interactable->DisableUI();
 	}
-
-	if (!*gamePlayStarts)
-		interactable->DisableUI();
 }
 
 void UInteractableManager::Unregister(AInteractableBase* interactable)
 {
-	_interactables.Push(interactable);
+	if (interactable)
+		_interactables.Push(interactable);
 }
 
 void UInteractableManager::StartGameplay()

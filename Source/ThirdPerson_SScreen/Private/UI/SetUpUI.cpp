@@ -3,27 +3,28 @@
 
 #include "UI/SetUpUI.h"
 #include "Kismet/GameplayStatics.h"
-#include "../ThirdPerson_SScreenGameModeBase.h"
-#include "Managers/HUDManager.h"
+#include "Managers/LevelManager.h"
 #include "Managers/PlayerManager.h"
 
 
 void USetUpUI::NativeConstruct()
 {
 	Super::NativeConstruct();
-	_textMesage->SetText(FText(FText::FromString("Write you name")));
 }
 
 void USetUpUI::DisableAddPlayerTwoBox()
 {
+	_player2Box->SetVisibility(ESlateVisibility::Collapsed);
 	_player2Box->SetVisibility(ESlateVisibility::Hidden);
 }
 
 
-void  USetUpUI::BeginPlay()
+void  USetUpUI::SetUp()
 {
-	_gameMode = Cast<AThirdPerson_SScreenGameModeBase>(UGameplayStatics::GetGameMode(GetWorld()));
-	UpdateAllGeneralMessage();
+	Super::SetUp();
+	_textMesage->SetText(FText(FText::FromString("Write you name")));
+	_levelManager = Cast<ALevelManager>(GetWorld()->GetLevelScriptActor());
+	_virtualKeyBoard->SetUp();
 }
 
 void USetUpUI::ButtonBackPressed()
@@ -46,9 +47,9 @@ void USetUpUI::ButtonStartPressed()
 	{
 		SetPlayerReady(true);
 	}
-	else if (_gameMode->GetPlayerManager()->AllPlayerIsReady())
+	else
 	{
-		_gameMode->StartGameplay();
+		OnStartGamePlay.Broadcast();
 	}
 }
 
@@ -81,38 +82,15 @@ void USetUpUI::ButtonRightPressed()
 
 void USetUpUI::ButtonPPressed()
 {
-	if (_gameMode->GetPlayerManager()->GetPlayerCount() == 1)
-	{
-		_gameMode->GetPlayerManager()->CreatePlayer2(GetWorld());
-		_gameMode->GetHUDManager()->PlayerTwoIsEnable();
-	}
+	UGameplayStatics::CreatePlayer(GetWorld());
 }
 
-void USetUpUI::UpdateAllGeneralMessage()
-{
-	_gameMode->GetHUDManager()->UpdateAllSetUpWidget();
-}
-
-void USetUpUI::UpdateGeneralMessage()
-{
-	FString message;
-	if (GetPlayerState()->GetPlayerId() == 0)
-	{
-		if (_gameMode->GetPlayerManager()->AllPlayerIsReady())
-		{
-			message.Append("Press Start");
-		}
-		else
-		{
-			message.Append("Waiting Players");
-		}
-	}
-	_generalMessage->SetText(FText::FromString(message));
-}
 
 void USetUpUI::SetPlayerReady(bool isReady)
 {
-	_virtualKeyBoard->SetVisibility(isReady ? ESlateVisibility::Hidden : ESlateVisibility::Visible);
+	_player2Box->SetVisibility(ESlateVisibility::Collapsed);
+	_player2Box->SetVisibility(isReady ? ESlateVisibility::Hidden : ESlateVisibility::Visible);
+
 	FString name = _virtualKeyBoard->GetText();
 	FString text;
 	text.Append(name);
@@ -120,7 +98,6 @@ void USetUpUI::SetPlayerReady(bool isReady)
 	_textMesage->SetText(FText::FromString(text));
 	GetPlayerState()->ready = isReady;
 	GetPlayerState()->name = name;
-	UpdateAllGeneralMessage();
 }
 
 APState* USetUpUI::GetPlayerState()

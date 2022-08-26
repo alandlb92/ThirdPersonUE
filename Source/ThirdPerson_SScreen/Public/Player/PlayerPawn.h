@@ -6,8 +6,10 @@
 #include "GameFramework/Pawn.h"
 #include "PlayerPawn.generated.h"
 
-struct FPlayerInput
+USTRUCT()
+struct THIRDPERSON_SSCREEN_API FPlayerPawnInput
 {
+	GENERATED_USTRUCT_BODY()
 public:
 	bool Enabled = true;
 	FVector2D LeftAxistState;
@@ -31,23 +33,24 @@ UCLASS()
 class THIRDPERSON_SSCREEN_API APlayerPawn : public APawn
 {
 	GENERATED_BODY()
-	friend class UPlayerManager;
 
 public:
 	APlayerPawn();
 
 protected:
 	virtual void BeginPlay() override;
-	virtual void Destroyed() override;
 
-public:	
+public:
 	virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	class APState* GetPState();
 	void SetCanInteractWith(class AInteractableBase* interactable);
 	void SetCleanInteractable();
+	UFUNCTION(Server, Reliable)
+	void StartGameplay();
 
 private:
+
 	class AInteractableBase* _interactableHandler;
 	class UPlayerLabelIWUI* _labelWidgetInstance;
 
@@ -55,8 +58,7 @@ private:
 
 	bool camereSeted;
 
-	FOnPlayerBegin OnAdjustCameraOnStart;
-	class AThirdPerson_SScreenGameModeBase* _gameMode;
+	FOnPlayerBegin* OnAdjustCameraOnStart;
 
 	void CalculatePlayerXYMovement(float DeltaTime);
 	void CalculatePlayerYawRotation(float DeltaTime);
@@ -67,11 +69,11 @@ private:
 	void InputMoveY(float y);
 	void InputMoveCameraX(float x);
 	void InputMoveCameraY(float y);
-	void StartGameplay();
 	void Interact();
+	void ExitSession();
 
 	class UPlayerAnimInstance* _animation;
-	FPlayerInput _playerInput;
+	FPlayerPawnInput _playerInput;
 
 	UPROPERTY(EditAnywhere)
 	float _maxSpeed;
@@ -96,6 +98,14 @@ private:
 	class USpringArmComponent* _cameraSpringArm;
 
 	UPROPERTY(EditAnywhere)
-	class UCameraComponent* _camera;
+		class UCameraComponent* _camera;
+
+	UPROPERTY(ReplicatedUsing=OnRep_Hidden)
+	bool _isHidden;
+
+	UFUNCTION()
+	void OnRep_Hidden();
+
+	void GetLifetimeReplicatedProps(TArray< FLifetimeProperty >& OutLifetimeProps) const override;
 
 };

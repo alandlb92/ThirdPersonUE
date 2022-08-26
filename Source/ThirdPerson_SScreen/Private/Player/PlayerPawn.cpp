@@ -10,36 +10,39 @@
 #include "Player/PlayerAnimInstance.h"
 #include "Components/CapsuleComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "Managers/LevelManager.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "../ThirdPerson_SScreenGameModeBase.h"
 #include "InWorldUI/PlayerLabelIWUI.h"
 #include "GameFramework/PlayerState.h"
 #include "Player/Pstate.h"
 #include "Managers/PlayerManager.h"
-#include "Managers/HUDManager.h"
 #include "Player/PlayerHUD.h"
+#include "Interactables/ShowTextInteractable.h"
+#include "Components/SceneComponent.h"
+#include "Net/UnrealNetwork.h"
 
-void FPlayerInput::UpdateLeftAxisX(float x)
+void FPlayerPawnInput::UpdateLeftAxisX(float x)
 {
-	_rawLeftAxis.X = x;	 
+	_rawLeftAxis.X = x;
 }
 
-void FPlayerInput::UpdateLeftAxisY(float y)
+void FPlayerPawnInput::UpdateLeftAxisY(float y)
 {
 	_rawLeftAxis.Y = y;
 }
 
-void FPlayerInput::UpdateRightAxisX(float x)
+void FPlayerPawnInput::UpdateRightAxisX(float x)
 {
 	_rawRightAxis.X = x;
 }
 
-void FPlayerInput::UpdateRightAxisY(float y)
+void FPlayerPawnInput::UpdateRightAxisY(float y)
 {
 	_rawRightAxis.Y = y;
 }
 
-void FPlayerInput::Sanitize()
+void FPlayerPawnInput::Sanitize()
 {
 	if (Enabled)
 	{
@@ -85,28 +88,30 @@ APlayerPawn::APlayerPawn()
 	_maxCameraSpeedRotation = 50.0f;
 
 	bUseControllerRotationYaw = false;
+
+	SetReplicates(true);
+	SetReplicateMovement(true);
 }
 
 // Called when the game starts or when spawned
 void APlayerPawn::BeginPlay()
 {
 	Super::BeginPlay();
-	_playerInput.Enabled = false;
-	SetActorHiddenInGame(true);
+	_playerInput.Enabled = true; 
+	_isHidden = true;
+	SetActorHiddenInGame(_isHidden);
 	_animation = Cast<UPlayerAnimInstance>(_mesh->GetAnimInstance());
-	_gameMode = Cast<AThirdPerson_SScreenGameModeBase>(UGameplayStatics::GetGameMode(GetWorld()));
-	_gameMode->GetPlayerManager()->Register(this);
 }
 
-void APlayerPawn::StartGameplay()
+void APlayerPawn::StartGameplay_Implementation()
 {
-	ConfigureInput();
-	_labelWidgetInstance = Cast<UPlayerLabelIWUI>(_widget3D->GetWidget());
-	GetPlayerState()->GetPlayerController()->SetViewTargetWithBlend(this, 1);
+	//_labelWidgetInstance = Cast<UPlayerLabelIWUI>(_widget3D->GetWidget());
+	//GetPlayerState()->GetPlayerController()->SetViewTargetWithBlend(this, 1);
 	_playerInput.Enabled = true;
-	SetActorHiddenInGame(false);
-	if (_labelWidgetInstance)
-		_labelWidgetInstance->SetLabel(GetPState()->name);
+	_isHidden = false;
+	SetActorHiddenInGame(_isHidden);
+	/*if (_labelWidgetInstance)
+		_labelWidgetInstance->SetLabel(GetPState()->name);*/
 }
 
 
@@ -116,14 +121,8 @@ void APlayerPawn::ConfigureInput()
 	InputComponent->BindAxis("MoveY", this, &APlayerPawn::InputMoveY);
 	InputComponent->BindAxis("MoveCameraX", this, &APlayerPawn::InputMoveCameraX);
 	InputComponent->BindAxis("MoveCameraY", this, &APlayerPawn::InputMoveCameraY);
-	InputComponent->BindAction("Interaction", IE_Pressed, this, &APlayerPawn::Interact);
-}
-
-void APlayerPawn::Destroyed()
-{
-	Super::Destroyed();
-	if (_gameMode && _gameMode->GetPlayerManager())
-		_gameMode->GetPlayerManager()->Unregister(this);
+	InputComponent->BindAction("Interaction", IE_Pressed, this, &APlayerPawn::StartGameplay);
+	InputComponent->BindAction("Quit", IE_Pressed, this, &APlayerPawn::ExitSession);	
 }
 
 // Called every frame
@@ -132,7 +131,7 @@ void APlayerPawn::Tick(float DeltaTime)
 	if (GetLocalViewingPlayerController() && !camereSeted)
 	{
 		camereSeted = true;
-		OnAdjustCameraOnStart.Broadcast(this);
+		//OnAdjustCameraOnStart->Broadcast(this);
 	}
 
 	Super::Tick(DeltaTime);
@@ -143,6 +142,8 @@ void APlayerPawn::Tick(float DeltaTime)
 	CalculateVelocity();
 	SetAnimationVariables();
 }
+
+
 
 void  APlayerPawn::CalculatePlayerXYMovement(float DeltaTime)
 {
@@ -188,37 +189,38 @@ void  APlayerPawn::SetAnimationVariables()
 void APlayerPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
+	ConfigureInput();
 }
 
 void APlayerPawn::SetCanInteractWith(AInteractableBase* interactable)
 {
 	_interactableHandler = interactable;
-	APlayerHUD* hud = _gameMode->GetHUDManager()->GetHudFromPlayer(GetPState()->GetPlayerId());
-	if (hud)
-		hud->EnableInteractMsg();
+	UGameplayStatics::GetPlayerController(GetWorld(), 0)->GetHUD<APlayerHUD>()->EnableInteractMsg();
 }
 
 void APlayerPawn::SetCleanInteractable()
 {
-	if (_interactableHandler)
-		_interactableHandler->Desinteract(GetPState()->GetPlayerId());
+	if (_interactableHandler) {
+		AShowTextInteractable* _showTextInteractable = Cast<AShowTextInteractable>(_interactableHandler);
+		if (_showTextInteractable)
+			_showTextInteractable->Desinteract(GetPState()->GetPlayerId());
+	}
 
 	_interactableHandler = nullptr;
-	APlayerHUD* hud = _gameMode->GetHUDManager()->GetHudFromPlayer(GetPState()->GetPlayerId());
-	if (hud)
-		hud->DisableInteractMsg();
+
+	UGameplayStatics::GetPlayerController(GetWorld(), 0)->GetHUD<APlayerHUD>()->DisableInteractMsg();
 }
 
 void APlayerPawn::InputMoveX(float x)
 {
 	_playerInput.UpdateLeftAxisX(x);
-	
+
 }
 
 void APlayerPawn::Interact()
 {
 	if (_interactableHandler && _playerInput.Enabled)
-		_interactableHandler->Interact(GetPState()->GetPlayerId());
+		_interactableHandler->Interact(0);
 }
 
 void APlayerPawn::InputMoveY(float y)
@@ -237,7 +239,24 @@ void APlayerPawn::InputMoveCameraY(float y)
 }
 
 
-class APState* APlayerPawn::GetPState()
+APState* APlayerPawn::GetPState()
 {
 	return  GetPlayerState<APState>();
+}
+
+
+void APlayerPawn::ExitSession()
+{
+	UKismetSystemLibrary::QuitGame(GetWorld(), UGameplayStatics::GetPlayerController(GetWorld(), 0), EQuitPreference::Quit, true);
+}
+
+void APlayerPawn::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+	DOREPLIFETIME(APlayerPawn, _isHidden);
+}
+
+void APlayerPawn::OnRep_Hidden()
+{
+	//SetActorHiddenInGame(_isHidden);
 }

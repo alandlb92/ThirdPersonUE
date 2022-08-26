@@ -2,10 +2,10 @@
 
 
 #include "Interactables/InteractableBase.h"
-#include "Kismet/GameplayStatics.h"
 #include "Player/PlayerPawn.h"
 #include "../ThirdPerson_SScreenGameModeBase.h" 
 #include "Managers/InteractableManager.h"
+#include "Managers/LevelManager.h"
 #include "Player/PlayerHUD.h"
 
 
@@ -43,18 +43,8 @@ void AInteractableBase::BeginPlay()
 	Super::BeginPlay();
 	_interactArea->OnComponentBeginOverlap.AddDynamic(this, &AInteractableBase::OnTriggerOverlapBegin);
 	_interactArea->OnComponentEndOverlap.AddDynamic(this, &AInteractableBase::OnTriggerOverlapEnd);
-	_gameMode = Cast<AThirdPerson_SScreenGameModeBase>(UGameplayStatics::GetGameMode(GetWorld()));
-	_gameMode->GetInteractableManager()->Register(this);
+	_levelManager = Cast<ALevelManager>(GetWorld()->GetLevelScriptActor());
 }
-
-
-void AInteractableBase::Destroyed()
-{
-	Super::Destroyed();
-	if (_gameMode && _gameMode->GetInteractableManager())
-		_gameMode->GetInteractableManager()->Unregister(this);
-}
-
 
 // Called every frame
 void AInteractableBase::Tick(float DeltaTime)

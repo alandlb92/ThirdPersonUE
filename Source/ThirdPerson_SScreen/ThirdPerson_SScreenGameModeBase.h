@@ -16,18 +16,5 @@ UCLASS()
 class THIRDPERSON_SSCREEN_API AThirdPerson_SScreenGameModeBase : public AGameModeBase
 {
 	GENERATED_BODY()
-		
-public:
-	void StartPlay() override;
-	void StartGameplay();
-	class UPlayerManager* GetPlayerManager();
-	class UHUDManager* GetHUDManager();
-	class UInteractableManager* GetInteractableManager();
-
-private:
-	bool GamePlayStarts;
-	UPlayerManager* _playerManager;
-	UHUDManager* _HUDManager;
-	UInteractableManager* _interactableManager;
 	
 };

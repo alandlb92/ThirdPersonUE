@@ -10,16 +10,20 @@
 #include <map>
 #include "VirtualKeyboardUI.generated.h"
 
-enum class SlotState
+UENUM()
+enum class SlotState : uint8
 {
 	SELECTED,
 	NOT_SELECTED
 };
 
-struct KeySlot
+USTRUCT()
+struct THIRDPERSON_SSCREEN_API FKeySlot
 {
+	GENERATED_USTRUCT_BODY()
 public:
-	KeySlot(UBorder* border, UTextBlock* text)
+	FKeySlot(){}
+	FKeySlot(UBorder* border, UTextBlock* text)
 	{
 		_border = border;
 		_text = text;
@@ -36,22 +40,23 @@ class THIRDPERSON_SSCREEN_API UVirtualKeyboardUI : public UUserWidget
 
 public:
 	void NativePreConstruct() override;
+	void SetUp();
 
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
-	FLinearColor borderUnselectedColor;
+		FLinearColor borderUnselectedColor;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
-	FLinearColor fontUnselectedColor;
+		FLinearColor fontUnselectedColor;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
-	FLinearColor borderSelectedColor;
+		FLinearColor borderSelectedColor;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
-	FLinearColor fontSelectedColor;
+		FLinearColor fontSelectedColor;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
-	UTextBlock* _textResult;
+		UTextBlock* _textResult;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
-	UGridPanel* _keyboardButtons;
+		UGridPanel* _keyboardButtons;
 
 	FString GetText();
 
@@ -64,10 +69,10 @@ public:
 
 private:
 	void UnselectAllButtons();
-	void SetButtonCollors(SlotState slotState, KeySlot* keySlot);
+	void SetButtonCollors(SlotState slotState, FKeySlot* keySlot);
 	void SetSelected(int indexSelected);
 	int _indexSelected;
-	std::map<int, KeySlot*> _buttons;
+	std::map<int, FKeySlot*> _buttons;
 	const int COLUNM_COUNT = 9;
 	const int LETTERS_COUNT = 27;
 	const FString _letters[27]{ "q", "w", "e", "r", "t", "y", "u", "i", "o",

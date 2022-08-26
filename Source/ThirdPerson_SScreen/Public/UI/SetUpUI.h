@@ -10,17 +10,13 @@
 #include "Player/PState.h"
 #include "SetUpUI.generated.h"
 
-/**
- * 
- */
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnStartGamePlay);
+
 UCLASS()
 class THIRDPERSON_SSCREEN_API USetUpUI : public UUIBase
 {
 	GENERATED_BODY()
 public:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
-	UTextBlock* _generalMessage;
-
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
 	UTextBlock* _textMesage;
 
@@ -31,7 +27,7 @@ public:
 	UBorder* _player2Box;
 
 	void NativeConstruct() override;
-	void BeginPlay();
+	void SetUp() override;
 
 	void ButtonBackPressed() override;
 	void ButtonConfirmPressed() override;
@@ -44,12 +40,11 @@ public:
 	void ButtonPPressed() override;
 
 	void DisableAddPlayerTwoBox();
-	void UpdateGeneralMessage();
+	FOnStartGamePlay OnStartGamePlay;
 
 private:
-	void UpdateAllGeneralMessage();
 	void SetPlayerReady(bool isReady);
-	class AThirdPerson_SScreenGameModeBase* _gameMode;
+	class ALevelManager* _levelManager;
 
 	APState* GetPlayerState();
 

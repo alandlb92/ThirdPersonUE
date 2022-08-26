@@ -16,7 +16,6 @@ UCLASS()
 class THIRDPERSON_SSCREEN_API APlayerHUD : public AHUD
 {
 	GENERATED_BODY()
-	friend class UHUDManager;
 public:
 	void BeginPlay() override;
 	UPROPERTY(EditDefaultsOnly, Category = "Widgets")
@@ -46,9 +45,14 @@ private:
 	USetUpUI* _setUpInstance;
 	UGameplayUI* _gamePlayInstace;
 
-	void EnableInput(UUIBase* UIReference);
-	void DisableInput();
+	UFUNCTION()
+	void HEnableInput(UUIBase* UIReference);	
+	UFUNCTION()
+	void HDisableInput();	
+	UFUNCTION()
 	void ChangeScreen(UIType uiType);
+	UFUNCTION()
+	void StartGamePlay();
 
 	void ButtonBackPressed();
 	void ButtonConfirmPressed();

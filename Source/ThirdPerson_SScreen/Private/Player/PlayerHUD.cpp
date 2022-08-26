@@ -4,75 +4,69 @@
 #include "Player/PlayerHUD.h"
 #include "Player/PState.h"
 #include "../ThirdPerson_SScreenGameModeBase.h"
-#include "Managers/HUDManager.h"
+#include "Blueprint/WidgetTree.h"
 #include "Kismet/GameplayStatics.h"
 
 
 void APlayerHUD::BeginPlay()
 {
-	IsShowingMessage = false;
-
 	Super::BeginPlay();
 
-	_hudManager = Cast<AThirdPerson_SScreenGameModeBase>(UGameplayStatics::GetGameMode(GetWorld()))->GetHUDManager();
-	_hudManager->Register(this);
+	IsShowingMessage = false;
+	UWorld* world = GetWorld();
 
-	if (_pressStartUI && PlayerOwner == GetWorld()->GetFirstPlayerController())
+	if (_pressStartUI)
 	{
 		if (_pressStartInstance == nullptr)
-			_pressStartInstance = CreateWidget<UPressStartUI, APlayerController>(PlayerOwner, _pressStartUI);
+			_pressStartInstance = CreateWidget<UPressStartUI, UWorld>(GetWorld(), _pressStartUI);
 		if (_pressStartInstance != nullptr)
 		{
 			_pressStartInstance->AddToPlayerScreen();
-			_pressStartInstance->SetUp(BaseUiSetUp{
-					std::bind(&APlayerHUD::EnableInput, this, std::placeholders::_1),
-					std::bind(&APlayerHUD::DisableInput, this),
-					std::bind(&UHUDManager::ChangeAllPlayersScreen, _hudManager, std::placeholders::_1)
-				});
+			_pressStartInstance->SetUp();
+			_pressStartInstance->OnEnableInputs.AddDynamic(this, &APlayerHUD::HEnableInput);
+			_pressStartInstance->OnDisableInputs.AddDynamic(this, &APlayerHUD::HDisableInput);
+			_pressStartInstance->OnChangeScreen.AddDynamic(this, &APlayerHUD::ChangeScreen);
+
 		}
 	}
 
 	if (_setUpUI)
 	{
 		if (_setUpInstance == nullptr)
-			_setUpInstance = CreateWidget<USetUpUI, APlayerController>(PlayerOwner, _setUpUI);
+			_setUpInstance = CreateWidget<USetUpUI, UWorld>(GetWorld(), _setUpUI);
 
 
 
 		if (_setUpInstance != nullptr)
 		{
 			_setUpInstance->AddToPlayerScreen();
-			_setUpInstance->SetUp(BaseUiSetUp{
-					std::bind(&APlayerHUD::EnableInput, this, std::placeholders::_1),
-					std::bind(&APlayerHUD::DisableInput, this),
-					std::bind(&APlayerHUD::ChangeScreen, this, std::placeholders::_1)
-				});
+			_setUpInstance->SetUp();
+			_setUpInstance->OnEnableInputs.AddDynamic(this, &APlayerHUD::HEnableInput);
+			_setUpInstance->OnDisableInputs.AddDynamic(this, &APlayerHUD::HDisableInput);
+			_setUpInstance->OnChangeScreen.AddDynamic(this, &APlayerHUD::ChangeScreen);
+			_setUpInstance->OnStartGamePlay.AddDynamic(this, &APlayerHUD::StartGamePlay);
 		}
 	}
 
 	if (_gamePlayUI)
 	{
 		if (_gamePlayInstace == nullptr)
-			_gamePlayInstace = CreateWidget<UGameplayUI, APlayerController>(PlayerOwner, _gamePlayUI);
+			_gamePlayInstace = CreateWidget<UGameplayUI, UWorld>(GetWorld(), _gamePlayUI);
 
 		if (_gamePlayInstace != nullptr)
 		{
 			_gamePlayInstace->AddToPlayerScreen();
-			_gamePlayInstace->SetUp(BaseUiSetUp{
-					std::bind(&APlayerHUD::EnableInput, this, std::placeholders::_1),
-					std::bind(&APlayerHUD::DisableInput, this),
-					std::bind(&APlayerHUD::ChangeScreen, this, std::placeholders::_1)
-				});
-
+			_gamePlayInstace->SetUp();
+			_gamePlayInstace->OnEnableInputs.AddDynamic(this, &APlayerHUD::HEnableInput);
+			_gamePlayInstace->OnDisableInputs.AddDynamic(this, &APlayerHUD::HDisableInput);
+			_gamePlayInstace->OnChangeScreen.AddDynamic(this, &APlayerHUD::ChangeScreen);
 			_gamePlayInstace->DisableInteractMsg();
 			_gamePlayInstace->HideText();
 		}
 	}
 
-
 	SetUpInputComponent();
-	_setUpInstance->BeginPlay();
-	if (PlayerOwner->GetPlayerState<APState>()->GetPlayerId() == 0)
+	if (PlayerOwner && PlayerOwner->GetPlayerState<APState>() && PlayerOwner->GetPlayerState<APState>()->GetPlayerId() == 0)
 		ChangeScreen(UIType::START);
 	else
 		ChangeScreen(UIType::SETUP);
@@ -120,7 +114,7 @@ void APlayerHUD::ClearAllActions()
 }
 
 void APlayerHUD::SetUpInputComponent()
-{	
+{
 	GetOwningPlayerController()->InputComponent->BindAction("UIConfirm", IE_Pressed, this, &APlayerHUD::ButtonConfirmPressed);
 	GetOwningPlayerController()->InputComponent->BindAction("UIStart", IE_Pressed, this, &APlayerHUD::ButtonStartPressed);
 	GetOwningPlayerController()->InputComponent->BindAction("UIBack", IE_Pressed, this, &APlayerHUD::ButtonBackPressed);
@@ -131,13 +125,13 @@ void APlayerHUD::SetUpInputComponent()
 	GetOwningPlayerController()->InputComponent->BindAction("JoinPlayer2", IE_Pressed, this, &APlayerHUD::ButtonPPressed);
 }
 
-void APlayerHUD::EnableInput(UUIBase* UIReference)
+void APlayerHUD::HEnableInput(UUIBase* UIReference)
 {
 	_currentUIinControll = UIReference;
 
 }
 
-void APlayerHUD::DisableInput()
+void APlayerHUD::HDisableInput()
 {
 	_lastUIControll = _currentUIinControll;
 	_currentUIinControll = nullptr;
@@ -145,6 +139,7 @@ void APlayerHUD::DisableInput()
 
 void APlayerHUD::ChangeScreen(UIType uiType)
 {
+
 	if (_lastUIControll)
 		_lastUIControll->Close();
 
@@ -164,6 +159,17 @@ void APlayerHUD::ChangeScreen(UIType uiType)
 	default:
 		break;
 	}
+}
+
+void APlayerHUD::StartGamePlay()
+{
+	APlayerPawn* _playerPawn = Cast<APlayerPawn>(GetOwningPawn());
+	if (_playerPawn)
+		_playerPawn->StartGameplay();
+
+	_currentUIinControll->DisableInputs();
+	ChangeScreen(UIType::GAMEPLAY);
+	ClearAllActions();
 }
 
 void APlayerHUD::ButtonBackPressed()

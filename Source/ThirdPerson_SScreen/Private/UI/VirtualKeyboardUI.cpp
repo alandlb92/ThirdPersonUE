@@ -11,6 +11,12 @@
 
 void UVirtualKeyboardUI::NativePreConstruct()
 {
+	
+	Super::NativePreConstruct();
+}
+
+void UVirtualKeyboardUI::SetUp()
+{
 	for (int i = 0; i < LETTERS_COUNT; i++)
 	{
 		FString borderName = FString("Border");
@@ -41,13 +47,11 @@ void UVirtualKeyboardUI::NativePreConstruct()
 		text->SetText(FText::FromString(_letters[i]));
 		text->SetJustification(ETextJustify::Center);
 
-		_buttons[i] = new KeySlot(border, text);
+		_buttons[i] = new FKeySlot(border, text);
 	}
 
 	SetSelected(0);
-	Super::NativePreConstruct();
 }
-
 
 FString UVirtualKeyboardUI::GetText()
 {
@@ -75,7 +79,7 @@ void UVirtualKeyboardUI::UnselectAllButtons()
 	}
 }
 
-void UVirtualKeyboardUI::SetButtonCollors(SlotState slotState, KeySlot* keySlot)
+void UVirtualKeyboardUI::SetButtonCollors(SlotState slotState, FKeySlot* keySlot)
 {
 	if (slotState == SlotState::SELECTED)
 	{
