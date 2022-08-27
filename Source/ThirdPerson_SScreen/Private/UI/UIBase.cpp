@@ -11,8 +11,7 @@ void UUIBase::SetUp()
 
 void UUIBase::Open()
 {
-	SetVisibility(ESlateVisibility::Collapsed);
-	SetVisibility(ESlateVisibility::Visible);
+	SetRenderOpacity(1);
 	CallOpenAnimation();
 }
 
@@ -23,8 +22,7 @@ void UUIBase::Close()
 
 void UUIBase::CloseAnimationFinished()
 {
-	SetVisibility(ESlateVisibility::Collapsed);
-	SetVisibility(ESlateVisibility::Hidden);
+	SetRenderOpacity(0);
 }
 
 void UUIBase::EnableInputs()

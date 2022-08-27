@@ -65,18 +65,8 @@ void APlayerHUD::BeginPlay()
 		}
 	}
 
-	SetUpInputComponent();
-	if (PlayerOwner && PlayerOwner->GetPlayerState<APState>() && PlayerOwner->GetPlayerState<APState>()->GetPlayerId() == 0)
-		ChangeScreen(UIType::START);
-	else
-		ChangeScreen(UIType::SETUP);
+	ChangeScreen(UIType::START);
 }
-
-void APlayerHUD::PlayerTwoIsEnable()
-{
-	_setUpInstance->DisableAddPlayerTwoBox();
-}
-
 
 void APlayerHUD::EnableInteractMsg()
 {
@@ -108,27 +98,9 @@ void APlayerHUD::HideText()
 	}
 }
 
-void APlayerHUD::ClearAllActions()
-{
-	GetOwningPlayerController()->InputComponent->ClearActionBindings();
-}
-
-void APlayerHUD::SetUpInputComponent()
-{
-	GetOwningPlayerController()->InputComponent->BindAction("UIConfirm", IE_Pressed, this, &APlayerHUD::ButtonConfirmPressed);
-	GetOwningPlayerController()->InputComponent->BindAction("UIStart", IE_Pressed, this, &APlayerHUD::ButtonStartPressed);
-	GetOwningPlayerController()->InputComponent->BindAction("UIBack", IE_Pressed, this, &APlayerHUD::ButtonBackPressed);
-	GetOwningPlayerController()->InputComponent->BindAction("UIUp", IE_Pressed, this, &APlayerHUD::ButtonUpPressed);
-	GetOwningPlayerController()->InputComponent->BindAction("UIDown", IE_Pressed, this, &APlayerHUD::ButtonDownPressed);
-	GetOwningPlayerController()->InputComponent->BindAction("UILeft", IE_Pressed, this, &APlayerHUD::ButtonLeftPressed);
-	GetOwningPlayerController()->InputComponent->BindAction("UIRight", IE_Pressed, this, &APlayerHUD::ButtonRightPressed);
-	GetOwningPlayerController()->InputComponent->BindAction("JoinPlayer2", IE_Pressed, this, &APlayerHUD::ButtonPPressed);
-}
-
 void APlayerHUD::HEnableInput(UUIBase* UIReference)
 {
 	_currentUIinControll = UIReference;
-
 }
 
 void APlayerHUD::HDisableInput()
@@ -165,11 +137,12 @@ void APlayerHUD::StartGamePlay()
 {
 	APlayerPawn* _playerPawn = Cast<APlayerPawn>(GetOwningPawn());
 	if (_playerPawn)
+	{
 		_playerPawn->StartGameplay();
+	}
 
 	_currentUIinControll->DisableInputs();
 	ChangeScreen(UIType::GAMEPLAY);
-	ClearAllActions();
 }
 
 void APlayerHUD::ButtonBackPressed()

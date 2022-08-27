@@ -4,10 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
-#include "Components/TextBlock.h"
+#include "Components/RichTextBlock.h"
 #include "Components/GridPanel.h"
 #include "Components/Border.h"
 #include <map>
+#include "Engine/DataTable.h"
 #include "VirtualKeyboardUI.generated.h"
 
 UENUM()
@@ -23,14 +24,15 @@ struct THIRDPERSON_SSCREEN_API FKeySlot
 	GENERATED_USTRUCT_BODY()
 public:
 	FKeySlot(){}
-	FKeySlot(UBorder* border, UTextBlock* text)
+	FKeySlot(FString character, UBorder* border, URichTextBlock* text)
 	{
+		_character = character;
 		_border = border;
 		_text = text;
 	}
-
+	FString _character;
 	UBorder* _border;
-	UTextBlock* _text;
+	URichTextBlock* _text;
 };
 
 UCLASS()
@@ -40,39 +42,37 @@ class THIRDPERSON_SSCREEN_API UVirtualKeyboardUI : public UUserWidget
 
 public:
 	void NativePreConstruct() override;
-	void SetUp();
-
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
-		FLinearColor borderUnselectedColor;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
-		FLinearColor fontUnselectedColor;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
-		FLinearColor borderSelectedColor;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
-		FLinearColor fontSelectedColor;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UDataTable* TextStyle;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
-		UTextBlock* _textResult;
+	FLinearColor borderUnselectedColor;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
+	FLinearColor borderSelectedColor;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
-		UGridPanel* _keyboardButtons;
+	URichTextBlock* _textResult;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
+	UGridPanel* _keyboardButtons;
 
 	FString GetText();
-
 	void RightKey();
 	void LefttKey();
-	void UptKey();
+	void UpKey();
 	void DownKey();
 	void Select();
 	void BackSpace();
 
 private:
+
 	void UnselectAllButtons();
-	void SetButtonCollors(SlotState slotState, FKeySlot* keySlot);
+	void SetButtonCollors(SlotState slotState, FKeySlot keySlot);
 	void SetSelected(int indexSelected);
 	int _indexSelected;
-	std::map<int, FKeySlot*> _buttons;
+	UPROPERTY()
+	TMap<int, FKeySlot> _buttons;
 	const int COLUNM_COUNT = 9;
 	const int LETTERS_COUNT = 27;
 	const FString _letters[27]{ "q", "w", "e", "r", "t", "y", "u", "i", "o",

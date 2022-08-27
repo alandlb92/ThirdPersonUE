@@ -4,8 +4,6 @@
 #include "Interactables/InteractableBase.h"
 #include "Player/PlayerPawn.h"
 #include "../ThirdPerson_SScreenGameModeBase.h" 
-#include "Managers/InteractableManager.h"
-#include "Managers/LevelManager.h"
 #include "Player/PlayerHUD.h"
 
 
@@ -43,7 +41,6 @@ void AInteractableBase::BeginPlay()
 	Super::BeginPlay();
 	_interactArea->OnComponentBeginOverlap.AddDynamic(this, &AInteractableBase::OnTriggerOverlapBegin);
 	_interactArea->OnComponentEndOverlap.AddDynamic(this, &AInteractableBase::OnTriggerOverlapEnd);
-	_levelManager = Cast<ALevelManager>(GetWorld()->GetLevelScriptActor());
 }
 
 // Called every frame

@@ -3,28 +3,12 @@
 
 #include "UI/SetUpUI.h"
 #include "Kismet/GameplayStatics.h"
-#include "Managers/LevelManager.h"
-#include "Managers/PlayerManager.h"
 
 
 void USetUpUI::NativeConstruct()
 {
 	Super::NativeConstruct();
-}
-
-void USetUpUI::DisableAddPlayerTwoBox()
-{
-	_player2Box->SetVisibility(ESlateVisibility::Collapsed);
-	_player2Box->SetVisibility(ESlateVisibility::Hidden);
-}
-
-
-void  USetUpUI::SetUp()
-{
-	Super::SetUp();
 	_textMesage->SetText(FText(FText::FromString("Write you name")));
-	_levelManager = Cast<ALevelManager>(GetWorld()->GetLevelScriptActor());
-	_virtualKeyBoard->SetUp();
 }
 
 void USetUpUI::ButtonBackPressed()
@@ -47,7 +31,7 @@ void USetUpUI::ButtonStartPressed()
 	{
 		SetPlayerReady(true);
 	}
-	else
+	else if(GetPlayerState()->ready)
 	{
 		OnStartGamePlay.Broadcast();
 	}
@@ -56,7 +40,7 @@ void USetUpUI::ButtonStartPressed()
 void USetUpUI::ButtonUpPressed()
 {
 	if (!GetPlayerState()->ready)
-		_virtualKeyBoard->UptKey();
+		_virtualKeyBoard->UpKey();
 }
 
 void USetUpUI::ButtonDownPressed()
@@ -88,13 +72,14 @@ void USetUpUI::ButtonPPressed()
 
 void USetUpUI::SetPlayerReady(bool isReady)
 {
-	_player2Box->SetVisibility(ESlateVisibility::Collapsed);
-	_player2Box->SetVisibility(isReady ? ESlateVisibility::Hidden : ESlateVisibility::Visible);
-
 	FString name = _virtualKeyBoard->GetText();
 	FString text;
+
+
+	_virtualKeyBoard->SetRenderOpacity(isReady);
+
 	text.Append(name);
-	text.Append(isReady ? " is Ready!" : "Write you name");
+	text.Append(isReady ? " is Ready! press enter to continue" : "Write you name");
 	_textMesage->SetText(FText::FromString(text));
 	GetPlayerState()->ready = isReady;
 	GetPlayerState()->name = name;

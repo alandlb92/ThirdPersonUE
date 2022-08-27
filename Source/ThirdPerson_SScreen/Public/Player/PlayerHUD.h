@@ -24,19 +24,23 @@ public:
 	TSubclassOf<USetUpUI> _setUpUI;
 	UPROPERTY(EditDefaultsOnly, Category = "Widgets")
 	TSubclassOf<UGameplayUI> _gamePlayUI;
-
-	void PlayerTwoIsEnable();
-	
+		
 	void EnableInteractMsg();
 	void DisableInteractMsg();
 	void ShowText(FString text);
 	void HideText();
 	bool IsShowingMessage;
 
+	void ButtonBackPressed();
+	void ButtonConfirmPressed();
+	void ButtonStartPressed();
+	void ButtonUpPressed();
+	void ButtonDownPressed();
+	void ButtonLeftPressed();
+	void ButtonRightPressed();
+	void ButtonPPressed();
 
 private:
-	void ClearAllActions();
-	void SetUpInputComponent();
 
 	class UHUDManager* _hudManager;
 	UUIBase* _currentUIinControll;
@@ -53,13 +57,4 @@ private:
 	void ChangeScreen(UIType uiType);
 	UFUNCTION()
 	void StartGamePlay();
-
-	void ButtonBackPressed();
-	void ButtonConfirmPressed();
-	void ButtonStartPressed();
-	void ButtonUpPressed();
-	void ButtonDownPressed();
-	void ButtonLeftPressed();
-	void ButtonRightPressed();
-	void ButtonPPressed();
 };

@@ -5,25 +5,21 @@
 
 void UGameplayUI::EnableInteractMsg()
 {
-	_inputs->SetVisibility(ESlateVisibility::Collapsed);
-	_inputs->SetVisibility(ESlateVisibility::Visible);
+	_inputs->SetRenderOpacity(1);
 }
 
 void UGameplayUI::DisableInteractMsg()
 {
-	_inputs->SetVisibility(ESlateVisibility::Collapsed);
-	_inputs->SetVisibility(ESlateVisibility::Hidden);
+	_inputs->SetRenderOpacity(0);
 }
 
 void UGameplayUI::ShowText(FString text)
 {
 	_generalMesage->SetText(FText::FromString(text));
-	_message->SetVisibility(ESlateVisibility::Collapsed);
-	_message->SetVisibility(ESlateVisibility::Visible);
+	_message->SetRenderOpacity(1);
 }
 
 void UGameplayUI::HideText()
 {
-	_message->SetVisibility(ESlateVisibility::Collapsed);
-	_message->SetVisibility(ESlateVisibility::Hidden);
+	_message->SetRenderOpacity(0);
 }

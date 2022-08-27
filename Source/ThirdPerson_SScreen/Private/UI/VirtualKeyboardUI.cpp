@@ -11,12 +11,8 @@
 
 void UVirtualKeyboardUI::NativePreConstruct()
 {
-	
 	Super::NativePreConstruct();
-}
-
-void UVirtualKeyboardUI::SetUp()
-{
+	_buttons.Empty();
 	for (int i = 0; i < LETTERS_COUNT; i++)
 	{
 		FString borderName = FString("Border");
@@ -39,7 +35,9 @@ void UVirtualKeyboardUI::SetUp()
 		FString TextName = FString("Text");
 		TextName.Append(FString::FromInt(i));
 
-		UTextBlock* text = WidgetTree->ConstructWidget<UTextBlock>(UTextBlock::StaticClass(), FName(*TextName));
+
+		URichTextBlock* text = WidgetTree->ConstructWidget<URichTextBlock>(URichTextBlock::StaticClass(), FName(*TextName));
+		text->SetTextStyleSet(TextStyle);
 		UScaleBoxSlot* textSlot = Cast<UScaleBoxSlot>(scaleBox->AddChild(text));
 
 		textSlot->SetHorizontalAlignment(EHorizontalAlignment::HAlign_Fill);
@@ -47,7 +45,7 @@ void UVirtualKeyboardUI::SetUp()
 		text->SetText(FText::FromString(_letters[i]));
 		text->SetJustification(ETextJustify::Center);
 
-		_buttons[i] = new FKeySlot(border, text);
+		_buttons.Add(i, FKeySlot(_letters[i], border, text));
 	}
 
 	SetSelected(0);
@@ -55,9 +53,8 @@ void UVirtualKeyboardUI::SetUp()
 
 FString UVirtualKeyboardUI::GetText()
 {
-	return _textResult->Text.ToString();
+	return _textResult->GetText().ToString();
 }
-
 
 void UVirtualKeyboardUI::SetSelected(int indexSelected)
 {
@@ -75,21 +72,32 @@ void UVirtualKeyboardUI::UnselectAllButtons()
 {
 	for (int i = 0; i < LETTERS_COUNT; i++)
 	{
-		SetButtonCollors(SlotState::NOT_SELECTED, _buttons[i]);
+		if (_buttons.Contains(i))
+			SetButtonCollors(SlotState::NOT_SELECTED, _buttons[i]);
 	}
 }
 
-void UVirtualKeyboardUI::SetButtonCollors(SlotState slotState, FKeySlot* keySlot)
+void UVirtualKeyboardUI::SetButtonCollors(SlotState slotState, FKeySlot keySlot)
 {
 	if (slotState == SlotState::SELECTED)
 	{
-		keySlot->_border->SetBrushColor(borderSelectedColor);
-		keySlot->_text->SetColorAndOpacity(fontSelectedColor);
+		if (keySlot._border)
+			keySlot._border->SetBrushColor(borderSelectedColor);
+		FString keyE = FString("<KeyboardEnable>");
+		keyE.Append(keySlot._character);
+		keyE.Append("</>");
+		/*if (keySlot._text)
+			keySlot._text->SetText(FText::FromString(keyE));*/
 	}
 	else if (slotState == SlotState::NOT_SELECTED)
 	{
-		keySlot->_border->SetBrushColor(borderUnselectedColor);
-		keySlot->_text->SetColorAndOpacity(fontUnselectedColor);
+		if (keySlot._border)
+			keySlot._border->SetBrushColor(borderUnselectedColor);
+		FString keyD = FString("<KeyboardDisable>");
+		keyD.Append(keySlot._character);
+		keyD.Append("</>");
+		/*if (keySlot._text)
+			keySlot._text->SetText(FText::FromString(keyD));*/
 	}
 }
 
@@ -120,7 +128,7 @@ void UVirtualKeyboardUI::LefttKey()
 	SetSelected(nextKey);
 }
 
-void UVirtualKeyboardUI::UptKey()
+void UVirtualKeyboardUI::UpKey()
 {
 	int lastColun = int((LETTERS_COUNT - 1) / COLUNM_COUNT);
 	int nextKey = _indexSelected - COLUNM_COUNT;
@@ -145,7 +153,6 @@ void UVirtualKeyboardUI::DownKey()
 
 	SetSelected(nextKey);
 }
-
 
 void UVirtualKeyboardUI::Select()
 {

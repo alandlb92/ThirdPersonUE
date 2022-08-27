@@ -13,13 +13,8 @@ UCLASS()
 class THIRDPERSON_SSCREEN_API APState : public APlayerState
 {
 	GENERATED_BODY()
-	friend class UPlayerManager;
 
 public:
-	void BeginPlay() override;
 	bool ready = false;
 	FString name;
-
-private:
-	static int _nextId;
 };

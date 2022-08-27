@@ -17,6 +17,7 @@ class THIRDPERSON_SSCREEN_API UPlayerLabelIWUI : public UUserWidget
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
 	UTextBlock* _playerNameText;
-	void SetLabel(FString text);
+	UFUNCTION(NetMulticast, Reliable)
+	void SetLabel(const FString& text);
 	
 };

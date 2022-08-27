@@ -3,7 +3,8 @@
 
 #include "InWorldUI/PlayerLabelIWUI.h"
 
-void UPlayerLabelIWUI::SetLabel(FString text)
+void UPlayerLabelIWUI::SetLabel_Implementation(const FString& text)
 {
-	_playerNameText->SetText(FText::FromString(text));
+	if (_playerNameText)
+		_playerNameText->SetText(FText::FromString(text));
 }

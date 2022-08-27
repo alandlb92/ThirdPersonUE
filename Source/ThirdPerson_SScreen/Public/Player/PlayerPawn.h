@@ -46,24 +46,41 @@ public:
 	class APState* GetPState();
 	void SetCanInteractWith(class AInteractableBase* interactable);
 	void SetCleanInteractable();
+
 	UFUNCTION(Server, Reliable)
+	void Server_OnStartGameplay(const FString& name);
+	UFUNCTION(NetMulticast, Reliable)
+	void Multicast_OnStartGameplay(const FString& name);
 	void StartGameplay();
 
-private:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UWidgetComponent* _widget3D;
 
+private:
 	class AInteractableBase* _interactableHandler;
 	class UPlayerLabelIWUI* _labelWidgetInstance;
 
-	void ConfigureInput();
+	void ConfigureInputForGamePlay();
+	void ConfigureInputForUI();
 
 	bool camereSeted;
 
 	FOnPlayerBegin* OnAdjustCameraOnStart;
-
-	void CalculatePlayerXYMovement(float DeltaTime);
-	void CalculatePlayerYawRotation(float DeltaTime);
-	void CalculateCameraPitchRotation(float DeltaTime);
+	UFUNCTION(Server, Reliable)
+	void Server_OnSetAnimationVariables(float directionX, float directionY);
+	UFUNCTION(NetMulticast, Reliable)
+	void Multicast_OnSetAnimationVariables(float directionX, float directionY);
 	void SetAnimationVariables();
+
+	UFUNCTION(Server, Reliable, WithValidation)
+	void Server_OnCalculatePlayerXYMovement(FVector newPosition);
+	void CalculatePlayerXYMovement(float DeltaTime);
+
+	UFUNCTION(Server, Reliable)
+	void Server_OnCalculatePlayerYawRotation(FQuat quatRotationToAdd);
+	void CalculatePlayerYawRotation(float DeltaTime);
+
+	void CalculateCameraPitchRotation(float DeltaTime);
 	void CalculateVelocity();
 	void InputMoveX(float x);
 	void InputMoveY(float y);
@@ -72,11 +89,11 @@ private:
 	void Interact();
 	void ExitSession();
 
-	class UPlayerAnimInstance* _animation;
+	class UPlayerAnimInstance* GetAnimation();
 	FPlayerPawnInput _playerInput;
 
 	UPROPERTY(EditAnywhere)
-	float _maxSpeed;
+		float _maxSpeed;
 
 	UPROPERTY(EditAnywhere)
 	float _maxPlayerSpeedRotation;
@@ -92,20 +109,12 @@ private:
 	class USkeletalMeshComponent* _mesh;
 
 	UPROPERTY(EditAnywhere)
-	class UWidgetComponent* _widget3D;
-
-	UPROPERTY(EditAnywhere)
 	class USpringArmComponent* _cameraSpringArm;
 
 	UPROPERTY(EditAnywhere)
-		class UCameraComponent* _camera;
+	class UCameraComponent* _camera;
 
-	UPROPERTY(ReplicatedUsing=OnRep_Hidden)
-	bool _isHidden;
 
-	UFUNCTION()
-	void OnRep_Hidden();
-
-	void GetLifetimeReplicatedProps(TArray< FLifetimeProperty >& OutLifetimeProps) const override;
+	class APlayerHUD* GetPHUD(); 
 
 };

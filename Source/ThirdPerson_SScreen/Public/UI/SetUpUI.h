@@ -20,14 +20,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
 	UTextBlock* _textMesage;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UVirtualKeyboardUI* _virtualKeyBoard;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
-	UBorder* _player2Box;
-
 	void NativeConstruct() override;
-	void SetUp() override;
 
 	void ButtonBackPressed() override;
 	void ButtonConfirmPressed() override;
@@ -39,12 +35,10 @@ public:
 	void ButtonRightPressed() override;
 	void ButtonPPressed() override;
 
-	void DisableAddPlayerTwoBox();
 	FOnStartGamePlay OnStartGamePlay;
 
 private:
 	void SetPlayerReady(bool isReady);
-	class ALevelManager* _levelManager;
 
 	APState* GetPlayerState();
 
