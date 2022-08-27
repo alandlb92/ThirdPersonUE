@@ -139,12 +139,14 @@ void APlayerPawn::Tick(float DeltaTime)
 	}
 
 	Super::Tick(DeltaTime);
-	_playerInput.Sanitize();
-	CalculatePlayerXYMovement(DeltaTime);
-	CalculatePlayerYawRotation(DeltaTime);
-	CalculateCameraPitchRotation(DeltaTime);
-	CalculateVelocity();
-	SetAnimationVariables();
+	if (IsLocallyControlled()) {
+		_playerInput.Sanitize();
+		CalculatePlayerXYMovement(DeltaTime);
+		CalculatePlayerYawRotation(DeltaTime);
+		CalculateCameraPitchRotation(DeltaTime);
+		CalculateVelocity();
+		SetAnimationVariables();
+	}
 }
 
 
@@ -205,10 +207,7 @@ void  APlayerPawn::CalculateVelocity()
 
 void  APlayerPawn::Server_OnSetAnimationVariables_Implementation(float directionX, float directionY)
 {
-	if (GetAnimation() != nullptr) {
-		GetAnimation()->_directionX = directionX;
-		GetAnimation()->_directionY = directionY;
-	}
+	Multicast_OnSetAnimationVariables(directionX, directionY);
 }
 
 void APlayerPawn::Multicast_OnSetAnimationVariables_Implementation(float directionX, float directionY)
