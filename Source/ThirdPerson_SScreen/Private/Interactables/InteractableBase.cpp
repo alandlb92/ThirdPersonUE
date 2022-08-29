@@ -5,6 +5,8 @@
 #include "Player/PlayerPawn.h"
 #include "../ThirdPerson_SScreenGameModeBase.h" 
 #include "Player/PlayerHUD.h"
+#include "Managers/LevelManager.h"
+#include "Managers/InteractableManager.h"
 
 
 // Sets default values
@@ -41,6 +43,7 @@ void AInteractableBase::BeginPlay()
 	Super::BeginPlay();
 	_interactArea->OnComponentBeginOverlap.AddDynamic(this, &AInteractableBase::OnTriggerOverlapBegin);
 	_interactArea->OnComponentEndOverlap.AddDynamic(this, &AInteractableBase::OnTriggerOverlapEnd);
+	Cast<ALevelManager>(GetLevel()->GetLevelScriptActor())->GetInteractableManager()->Register(this);
 }
 
 // Called every frame
@@ -60,30 +63,32 @@ void AInteractableBase::DisableUI()
 	_widget3D->SetVisibility(false);
 }
 
-void AInteractableBase::Interact(int playerId)
+void AInteractableBase::Interact(APlayerPawn* player)
 {
 }
 
-void AInteractableBase::Desinteract(int playerId)
+void AInteractableBase::Desinteract(APlayerPawn* player)
 {
 }
 
 
 void AInteractableBase::OnTriggerOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	playersInteractingCount++;
-	_widget3D->SetVisibility(false);
-	DisableUI();
-
 	APlayerPawn* Player = Cast<APlayerPawn>(OtherActor);
-	if (Player)
+	if (Player && Player->IsLocallyControlled())
+	{
+		playersInteractingCount++;
+		_widget3D->SetVisibility(false);
+		DisableUI();
+
 		Player->SetCanInteractWith(this);
+	}
 }
 
 void AInteractableBase::OnTriggerOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
 	APlayerPawn* Player = Cast<APlayerPawn>(OtherActor);
-	if (Player)
+	if (Player && Player->IsLocallyControlled())
 	{
 		UE_LOG(LogTemp, Warning, TEXT("OnTriggerOverlapEnd"));
 		playersInteractingCount--;

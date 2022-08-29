@@ -2,6 +2,7 @@
 
 
 #include "Interactables/ShowTextInteractable.h"
+#include "Player/PlayerPawn.h"
 
 
 void AShowTextInteractable::BeginPlay()
@@ -9,12 +10,12 @@ void AShowTextInteractable::BeginPlay()
 	Super::BeginPlay();
 }
 
-void AShowTextInteractable::Interact(int playerId)
+void AShowTextInteractable::Interact(APlayerPawn* player)
 {
-	OnPlayerInteract.Broadcast(playerId, textToShow);
+	player->OnShowTextInteract.Broadcast(textToShow);
 }
 
-void AShowTextInteractable::Desinteract(int playerId)
+void AShowTextInteractable::Desinteract(APlayerPawn* player)
 {
-	OnPlayerDesinteract.Broadcast(playerId);
+	player->OnHideTextInteract.Broadcast();
 }

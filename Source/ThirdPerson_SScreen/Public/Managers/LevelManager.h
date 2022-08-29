@@ -7,10 +7,20 @@
 #include "LevelManager.generated.h"
 
 /**
- * 
+ *
  */
 UCLASS()
 class THIRDPERSON_SSCREEN_API ALevelManager : public ALevelScriptActor
 {
 	GENERATED_BODY()
+public:
+	virtual void PreInitializeComponents() override;
+	class UInteractableManager* GetInteractableManager();
+	class UPlayerManager* GetPlayerManager();
+
+private:
+	UPROPERTY()
+	class UInteractableManager* _interactableManager;
+	UPROPERTY()
+	class UPlayerManager* _playerManager;
 };

@@ -9,7 +9,7 @@
 #include "GameplayUI.generated.h"
 
 /**
- * 
+ *
  */
 UCLASS()
 class THIRDPERSON_SSCREEN_API UGameplayUI : public UUIBase
@@ -27,7 +27,9 @@ public:
 
 	void EnableInteractMsg();
 	void DisableInteractMsg();
+	UFUNCTION()
 	void ShowText(FString text);
+	UFUNCTION()
 	void HideText();
 
 };

@@ -15,8 +15,12 @@ void UGameplayUI::DisableInteractMsg()
 
 void UGameplayUI::ShowText(FString text)
 {
-	_generalMesage->SetText(FText::FromString(text));
-	_message->SetRenderOpacity(1);
+	if (_message->GetRenderOpacity() == 1)
+		HideText();
+	else {
+		_generalMesage->SetText(FText::FromString(text));
+		_message->SetRenderOpacity(1);
+	}
 }
 
 void UGameplayUI::HideText()

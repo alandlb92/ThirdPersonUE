@@ -35,8 +35,8 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-	virtual void Interact(int playerId);
-	virtual void Desinteract(int playerId);
+	virtual void Interact(class APlayerPawn* player);
+	virtual void Desinteract(class APlayerPawn* player);
 
 
 	void EnableUI();

@@ -14,12 +14,12 @@ class THIRDPERSON_SSCREEN_API UStartCameraComponent : public UActorComponent
 
 public:	
 	UStartCameraComponent();
-
-protected:
 	virtual void BeginPlay() override;
 
 private:
-	void OnPlayerRegistered(class APlayerPawn* player);
+	UFUNCTION()
+	void OnLocalPlayerRegistered(class APlayerPawn* player);
+	class UPlayerManager* _playerManager;
 
 		
 };

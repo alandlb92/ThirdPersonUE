@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
+#include "../ThirdPerson_SScreenGameModeBase.h"
 #include "PlayerPawn.generated.h"
 
 USTRUCT()
@@ -33,7 +34,7 @@ UCLASS()
 class THIRDPERSON_SSCREEN_API APlayerPawn : public APawn
 {
 	GENERATED_BODY()
-
+	friend class UPlayerManager;
 public:
 	APlayerPawn();
 
@@ -41,11 +42,20 @@ protected:
 	virtual void BeginPlay() override;
 
 public:
+	FOnPlayerShowTextInteract OnShowTextInteract;
+	FOnPlayerHideTextIfShowing OnHideTextInteract;
+
+
 	virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+	virtual void GetLifetimeReplicatedProps(TArray< FLifetimeProperty >& OutLifetimeProps) const override;
+	
 	class APState* GetPState();
+	
+
 	void SetCanInteractWith(class AInteractableBase* interactable);
 	void SetCleanInteractable();
+
 
 	UFUNCTION(Server, Reliable)
 	void Server_OnStartGameplay(const FString& name);
@@ -56,16 +66,27 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	class UWidgetComponent* _widget3D;
 
+
+	int GetPlayerIndex();
+	int GetLocalPlayerIndex();
+
 private:
+	UPROPERTY(Replicated)
+	int _playerIndex;
+	int _localPlayerIndex;
+	static int NexPlayerIndex;
+	UFUNCTION(Server, Reliable)
+	void Server_SetPlayerIndex();
+
 	class AInteractableBase* _interactableHandler;
 	class UPlayerLabelIWUI* _labelWidgetInstance;
 
 	void ConfigureInputForGamePlay();
 	void ConfigureInputForUI();
 
-	bool camereSeted;
-
+	//TODO
 	FOnPlayerBegin* OnAdjustCameraOnStart;
+
 	UFUNCTION(Server, Reliable)
 	void Server_OnSetAnimationVariables(float directionX, float directionY);
 	UFUNCTION(NetMulticast, Reliable)
@@ -116,5 +137,4 @@ private:
 
 
 	class APlayerHUD* GetPHUD(); 
-
 };

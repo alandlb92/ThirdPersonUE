@@ -3,9 +3,11 @@
 
 #include "Player/PlayerHUD.h"
 #include "Player/PState.h"
+#include "Player/PlayerPawn.h"
 #include "../ThirdPerson_SScreenGameModeBase.h"
 #include "Blueprint/WidgetTree.h"
 #include "Kismet/GameplayStatics.h"
+
 
 
 void APlayerHUD::BeginPlay()
@@ -62,8 +64,11 @@ void APlayerHUD::BeginPlay()
 			_gamePlayInstace->OnChangeScreen.AddDynamic(this, &APlayerHUD::ChangeScreen);
 			_gamePlayInstace->DisableInteractMsg();
 			_gamePlayInstace->HideText();
+			Cast<APlayerPawn>(GetOwningPawn())->OnShowTextInteract.AddDynamic(_gamePlayInstace, &UGameplayUI::ShowText);
+			Cast<APlayerPawn>(GetOwningPawn())->OnHideTextInteract.AddDynamic(_gamePlayInstace, &UGameplayUI::HideText);
 		}
 	}
+
 
 	ChangeScreen(UIType::START);
 }
