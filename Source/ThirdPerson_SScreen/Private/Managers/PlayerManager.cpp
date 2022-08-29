@@ -12,9 +12,12 @@ UPlayerManager::UPlayerManager() : UObject()
 
 void UPlayerManager::Register(APlayerPawn* player)
 {
-	_container.Add(player);
-	if (player->IsLocallyControlled()) {
-		player->_localPlayerIndex = nextPlayerIndex++;
+	if (!_container.Contains(player))
+	{
+		_container.Add(player);
+		if (player->IsLocallyControlled()) {
+			player->_localPlayerIndex = nextPlayerIndex++;
+		}
 		OnLocalPlayerRegistered.Broadcast(player);
 	}
 }

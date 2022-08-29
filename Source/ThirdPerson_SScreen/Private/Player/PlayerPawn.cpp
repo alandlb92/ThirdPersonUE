@@ -106,9 +106,10 @@ void APlayerPawn::BeginPlay()
 
 void APlayerPawn::StartGameplay()
 {
-	ConfigureInputForGamePlay();
-	if (IsLocallyControlled())
+	if (IsLocallyControlled()) {
+		ConfigureInputForGamePlay();
 		UGameplayStatics::GetPlayerController(this, _localPlayerIndex)->SetViewTargetWithBlend(_camera->GetOwner());
+	}
 
 	if (_widget3D)
 		Cast<UPlayerLabelIWUI>(_widget3D->GetWidget())->SetLabel(FString(GetPState()->name));
@@ -275,8 +276,7 @@ void APlayerPawn::ConfigureInputForUI()
 		InputComponent->BindAction("UIUp", IE_Pressed, GetPHUD(), &APlayerHUD::ButtonUpPressed);
 		InputComponent->BindAction("UIDown", IE_Pressed, GetPHUD(), &APlayerHUD::ButtonDownPressed);
 		InputComponent->BindAction("UILeft", IE_Pressed, GetPHUD(), &APlayerHUD::ButtonLeftPressed);
-		InputComponent->BindAction("UIRight", IE_Pressed, GetPHUD(), &APlayerHUD::ButtonRightPressed);
-		InputComponent->BindAction("JoinPlayer2", IE_Pressed, GetPHUD(), &APlayerHUD::ButtonPPressed);
+		InputComponent->BindAction("UIRight", IE_Pressed, GetPHUD(), &APlayerHUD::ButtonRightPressed);		
 	}
 }
 

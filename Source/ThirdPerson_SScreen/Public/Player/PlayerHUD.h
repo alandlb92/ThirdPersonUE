@@ -10,7 +10,7 @@
 #include "PlayerHUD.generated.h"
 
 /**
- * 
+ *
  */
 UCLASS()
 class THIRDPERSON_SSCREEN_API APlayerHUD : public AHUD
@@ -19,12 +19,12 @@ class THIRDPERSON_SSCREEN_API APlayerHUD : public AHUD
 public:
 	void BeginPlay() override;
 	UPROPERTY(EditDefaultsOnly, Category = "Widgets")
-	TSubclassOf<UPressStartUI> _pressStartUI;
+		TSubclassOf<UPressStartUI> _pressStartUI;
 	UPROPERTY(EditDefaultsOnly, Category = "Widgets")
-	TSubclassOf<USetUpUI> _setUpUI;
+		TSubclassOf<USetUpUI> _setUpUI;
 	UPROPERTY(EditDefaultsOnly, Category = "Widgets")
-	TSubclassOf<UGameplayUI> _gamePlayUI;
-		
+		TSubclassOf<UGameplayUI> _gamePlayUI;
+
 	void EnableInteractMsg();
 	void DisableInteractMsg();
 	void ShowText(FString text);
@@ -39,7 +39,6 @@ public:
 	void ButtonLeftPressed();
 	void ButtonRightPressed();
 	void ButtonPPressed();
-
 private:
 
 	class UHUDManager* _hudManager;
@@ -50,11 +49,11 @@ private:
 	UGameplayUI* _gamePlayInstace;
 
 	UFUNCTION()
-	void HEnableInput(UUIBase* UIReference);	
+		void HEnableInput(UUIBase* UIReference);
 	UFUNCTION()
-	void HDisableInput();	
+		void HDisableInput();
 	UFUNCTION()
-	void ChangeScreen(UIType uiType);
+		void ChangeScreen(UIType uiType);
 	UFUNCTION()
-	void StartGamePlay();
+		void StartGamePlay();
 };

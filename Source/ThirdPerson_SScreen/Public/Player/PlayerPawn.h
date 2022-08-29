@@ -84,9 +84,6 @@ private:
 	void ConfigureInputForGamePlay();
 	void ConfigureInputForUI();
 
-	//TODO
-	FOnPlayerBegin* OnAdjustCameraOnStart;
-
 	UFUNCTION(Server, Reliable)
 	void Server_OnSetAnimationVariables(float directionX, float directionY);
 	UFUNCTION(NetMulticast, Reliable)

@@ -8,7 +8,7 @@
 void USetUpUI::NativeConstruct()
 {
 	Super::NativeConstruct();
-	_textMesage->SetText(FText(FText::FromString("Write you name")));
+	_textMesage->SetText(FText(FText::FromString("Write your name")));
 }
 
 void USetUpUI::ButtonBackPressed()
@@ -72,14 +72,13 @@ void USetUpUI::ButtonPPressed()
 
 void USetUpUI::SetPlayerReady(bool isReady)
 {
-	FString name = _virtualKeyBoard->GetText();
+	FString name = isReady ? _virtualKeyBoard->GetText() : "";
 	FString text;
 
-
-	_virtualKeyBoard->SetRenderOpacity(isReady);
+	_virtualKeyBoard->SetRenderOpacity(!isReady);
 
 	text.Append(name);
-	text.Append(isReady ? " is Ready! press enter to continue" : "Write you name");
+	text.Append(isReady ? " is Ready! press enter to continue" : "Write your name");
 	_textMesage->SetText(FText::FromString(text));
 	GetPlayerState()->ready = isReady;
 	GetPlayerState()->name = name;
