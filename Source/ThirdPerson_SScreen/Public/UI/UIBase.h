@@ -29,10 +29,10 @@ public:
 	void Close();
 
 	UFUNCTION(BlueprintImplementableEvent)
-		void CallOpenAnimation();
+	void CallOpenAnimation();
 
 	UFUNCTION(BlueprintImplementableEvent)
-		void CallCloseAnimation();
+	void CallCloseAnimation();
 
 	UFUNCTION(BlueprintCallable, Category = "Base UI")
 		void EnableInputs();

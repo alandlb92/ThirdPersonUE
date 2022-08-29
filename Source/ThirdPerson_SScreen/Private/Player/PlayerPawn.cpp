@@ -107,7 +107,7 @@ void APlayerPawn::BeginPlay()
 void APlayerPawn::StartGameplay()
 {
 	ConfigureInputForGamePlay();
-	if(IsLocallyControlled())
+	if (IsLocallyControlled())
 		UGameplayStatics::GetPlayerController(this, _localPlayerIndex)->SetViewTargetWithBlend(_camera->GetOwner());
 
 	if (_widget3D)
@@ -313,7 +313,17 @@ void APlayerPawn::InputMoveX(float x)
 void APlayerPawn::Interact()
 {
 	if (_interactableHandler && _playerInput.Enabled)
-		_interactableHandler->Interact(this);
+	{
+		if (_interactableHandler->InteractOnlyInCLient)
+			_interactableHandler->Interact(this);
+		else
+			Server_Interact(_interactableHandler);
+	}
+}
+
+void APlayerPawn::Server_Interact_Implementation(AInteractableBase* interactable)
+{
+	interactable->Interact(this);
 }
 
 void APlayerPawn::InputMoveY(float y)

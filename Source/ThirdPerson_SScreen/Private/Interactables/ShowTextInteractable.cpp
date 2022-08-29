@@ -8,6 +8,7 @@
 void AShowTextInteractable::BeginPlay()
 {
 	Super::BeginPlay();
+	InteractOnlyInCLient = true;
 }
 
 void AShowTextInteractable::Interact(APlayerPawn* player)

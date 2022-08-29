@@ -41,6 +41,7 @@ AInteractableBase::AInteractableBase()
 void AInteractableBase::BeginPlay()
 {
 	Super::BeginPlay();
+	InteractOnlyInCLient = false;
 	_interactArea->OnComponentBeginOverlap.AddDynamic(this, &AInteractableBase::OnTriggerOverlapBegin);
 	_interactArea->OnComponentEndOverlap.AddDynamic(this, &AInteractableBase::OnTriggerOverlapEnd);
 	Cast<ALevelManager>(GetLevel()->GetLevelScriptActor())->GetInteractableManager()->Register(this);

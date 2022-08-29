@@ -108,6 +108,10 @@ private:
 	void InputMoveCameraX(float x);
 	void InputMoveCameraY(float y);
 	void Interact();
+
+	UFUNCTION(Server, Reliable)
+	void Server_Interact(class AInteractableBase* interactable);
+
 	void ExitSession();
 
 	class UPlayerAnimInstance* GetAnimation();
